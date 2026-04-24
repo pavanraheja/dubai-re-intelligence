@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dash Capital — Weekly RE Snapshot</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body { font-family: 'Inter', -apple-system, sans-serif; background: #0d0d0d; color: #e0e0e0; padding: 30px; min-height: 100vh; }
+
+  h1 { font-size: 22px; color: #fff; margin-bottom: 4px; }
+  .sub { color: #555; font-size: 13px; margin-bottom: 28px; }
+
+  .stats { display: flex; gap: 14px; margin-bottom: 28px; flex-wrap: wrap; }
+  .stat-box { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 10px; padding: 14px 18px; min-width: 120px; }
+  .stat-box .label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
+  .stat-box .value { font-size: 18px; font-weight: 700; color: #fff; margin-top: 4px; }
+  .green .value { color: #00c853; }
+  .red   .value { color: #ff1744; }
+  .gold  .value { color: #ffd600; }
+  .blue  .value { color: #1e88e5; }
+
+  h2 { font-size: 13px; color: #555; margin: 28px 0 14px; text-transform: uppercase;
+       letter-spacing: 2px; border-bottom: 1px solid #1e1e1e; padding-bottom: 8px; }
+
+  .layout { display: grid; grid-template-columns: 1fr 400px; gap: 24px; align-items: start; }
+
+  .editor { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 24px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .form-group { margin-bottom: 14px; }
+  .form-group label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 6px; }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; background: #111; border: 1px solid #2a2a2a; border-radius: 8px;
+    color: #e0e0e0; font-size: 13px; padding: 8px 12px; outline: none; font-family: inherit; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #1e88e5; }
+  .form-group textarea { resize: vertical; min-height: 80px; line-height: 1.7; }
+
+  .section-divider { border: none; border-top: 1px solid #1e1e1e; margin: 18px 0; }
+
+  .week-block { background: #111; border: 1px solid #2a2a2a; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+  .week-block .week-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; font-weight: 600; }
+
+  .source-note { font-size: 10px; color: #444; margin-top: 6px; font-style: italic; }
+
+  .btn { padding: 10px 20px; border-radius: 8px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+  .btn-primary { background: #1e88e5; color: #fff; width: 100%; margin-top: 16px; padding: 13px; font-size: 14px; }
+  .btn-primary:hover { background: #1976d2; }
+
+  /* WhatsApp panel */
+  .preview-panel { position: sticky; top: 30px; }
+  .preview-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .preview-header h2 { margin: 0; border: none; padding: 0; }
+  .verified-badge { font-size: 10px; background: #1b3a2a; color: #00c853; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+
+  .wa-phone { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; overflow: hidden; }
+  .wa-topbar { background: #128C7E; padding: 12px 16px; display: flex; align-items: center; gap: 10px; }
+  .wa-avatar { width: 34px; height: 34px; border-radius: 50%; background: #075E54; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0; letter-spacing: -0.5px; }
+  .wa-contact .name { font-size: 13px; font-weight: 600; color: #fff; }
+  .wa-contact .status { font-size: 11px; color: rgba(255,255,255,0.65); }
+  .wa-body { background: #0b1a0f; padding: 16px; }
+  .wa-bubble { background: #1f2c1f; border-radius: 8px 8px 8px 0; padding: 14px 16px; width: 100%; }
+  .wa-text { font-size: 13px; line-height: 1.7; color: #e9edef; white-space: pre-wrap; word-break: break-word; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+  .wa-time { font-size: 10px; color: #8696a0; text-align: right; margin-top: 8px; }
+  .copy-row { padding: 12px 16px; background: #111; border-top: 1px solid #1e1e1e; display: flex; gap: 10px; }
+  .btn-copy { flex: 1; background: #25D366; color: #fff; border: none; border-radius: 8px; padding: 11px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+  .btn-copy:hover { background: #1ebe57; }
+  .btn-copy.copied { background: #00c853; }
+  .btn-reset { background: #1e1e1e; color: #666; border: none; border-radius: 8px; padding: 11px 16px; font-size: 13px; cursor: pointer; font-family: inherit; }
+  .btn-reset:hover { background: #2a2a2a; color: #aaa; }
+
+  /* Verification section */
+  .verify-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+  .verify-card { background: #111; border: 1px solid #2a2a2a; border-radius: 8px; padding: 14px; }
+  .verify-card .vc-week { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .verify-card .vc-val { font-size: 16px; font-weight: 700; color: #ffd600; }
+  .verify-card .vc-txn { font-size: 12px; color: #aaa; margin-top: 2px; }
+  .verify-card .vc-source { font-size: 10px; color: #444; margin-top: 8px; border-top: 1px solid #1e1e1e; padding-top: 6px; }
+  .verify-card .vc-source a { color: #1e88e5; text-decoration: none; }
+  .verify-card .vc-source a:hover { text-decoration: underline; }
+  .verify-card .vc-flag { font-size: 10px; color: #ff9800; margin-top: 4px; }
+
+  table { width: 100%; border-collapse: collapse; background: #1a1a1a; border-radius: 10px; overflow: hidden; }
+  th { background: #222; padding: 10px 14px; text-align: left; font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
+  td { padding: 10px 14px; border-bottom: 1px solid #1a1a1a; font-size: 12px; color: #aaa; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #1e1e1e; }
+  td.val { color: #fff; font-weight: 600; }
+  td.up { color: #00c853; font-weight: 600; }
+  td.dn { color: #ff1744; font-weight: 600; }
+  .history-wrap { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; overflow: hidden; margin-top: 28px; }
+
+  .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: #25D366; color: #fff; padding: 12px 28px; border-radius: 50px;
+    font-size: 13px; font-weight: 600; opacity: 0; transition: all 0.3s; z-index: 999; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 980px) {
+    .layout { grid-template-columns: 1fr; }
+    .preview-panel { position: static; }
+    .verify-grid { grid-template-columns: 1fr 1fr; }
+    .form-row-3 { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:6px;">
+  <div>
+    <h1>🏙️ Dash Capital — Weekly RE Snapshot Generator</h1>
+    <p class="sub">Auto-calculates WoW changes · Verified DLD data · One-click WhatsApp copy · <span id="last-updated" style="color:#ffd600;">Loading...</span></p>
+  </div>
+  <button id="refresh-btn" onclick="manualRefresh()" style="background:#1e1e1e;color:#aaa;border:1px solid #2a2a2a;border-radius:8px;padding:8px 16px;font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap;">🔄 Refresh Now</button>
+</div>
+<div id="pending-banner" style="display:none;background:#1a1200;border:1px solid #3a2e00;border-radius:8px;padding:10px 16px;margin-bottom:18px;font-size:12px;color:#ffd600;">
+  ⏳ <span id="pending-text"></span>
+</div>
+
+<!-- Stat boxes -->
+<div class="stats">
+  <div class="stat-box gold">
+    <div class="label">Latest Value</div>
+    <div class="value" id="stat-value">AED 16.11B</div>
+  </div>
+  <div class="stat-box blue">
+    <div class="label">Transactions</div>
+    <div class="value" id="stat-txn">3,544</div>
+  </div>
+  <div class="stat-box" id="stat-val-wow-box">
+    <div class="label">Value WoW</div>
+    <div class="value" id="stat-val-wow">+90.0%</div>
+  </div>
+  <div class="stat-box" id="stat-vol-wow-box">
+    <div class="label">Volume WoW</div>
+    <div class="value" id="stat-vol-wow">+34.7%</div>
+  </div>
+  <div class="stat-box">
+    <div class="label">Off-Plan</div>
+    <div class="value" id="stat-offplan">~69%</div>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- LEFT COLUMN -->
+  <div>
+    <h2>Edit This Week's Numbers</h2>
+    <div class="editor">
+
+      <!-- Week 3 — Latest -->
+      <div class="week-block">
+        <div class="week-label" style="color:#ffd600;">📍 Latest Week</div>
+        <div class="form-row-3">
+          <div class="form-group">
+            <label>Date Range</label>
+            <input type="text" id="w3-dates" value="Mar 10–16, 2026" oninput="generate()">
+          </div>
+          <div class="form-group">
+            <label>Value (AED Billion)</label>
+            <input type="number" id="w3-value" value="16.11" step="0.01" oninput="generate()">
+          </div>
+          <div class="form-group">
+            <label>Deals</label>
+            <input type="number" id="w3-txn" value="3544" oninput="generate()">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Off-Plan %</label>
+            <input type="text" id="w3-offplan" value="~69%" oninput="generate()">
+          </div>
+          <div class="form-group">
+            <label>Period Label (optional)</label>
+            <input type="text" id="w3-label" value="4th Week of Ramadan" oninput="generate()">
+          </div>
+        </div>
+        <p class="source-note">✅ Source: Voice of Emirates, Mar 18 2026 — DLD data</p>
+      </div>
+
+      <!-- Week 2 -->
+      <div class="week-block">
+        <div class="week-label" style="color:#aaa;">Week 2</div>
+        <div class="form-row-3">
+          <div class="form-group">
+            <label>Date Range</label>
+            <input type="text" id="w2-dates" value="Mar 2–8, 2026" oninput="generate()">
+          </div>
+          <div class="form-group">
+            <label>Value (AED Billion)</label>
+            <input type="number" id="w2-value" value="8.48" step="0.01" oninput="generate()">
+          </div>
+          <div class="form-group">
+            <label>Deals</label>
+            <input type="number" id="w2-txn" value="2632" oninput="generate()">
+          </div>
+        </div>
+        <p class="source-note">✅ Source: Edwards & Towers Weekly Rundown (Mar 6–12) — DLD data</p>
+        <p class="source-note" style="color:#ff9800;">⚠️ Note: Source labels this as Mar 6–12. Date range updated to match your template.</p>
+      </div>
+
+      <!-- Week 1 -->
+      <div class="week-block">
+        <div class="week-label" style="color:#555;">Week 1</div>
+        <div class="form-row-3">
+          <div class="form-group">
+            <label>Date Range</label>
+            <input type="text" id="w1-dates" value="Feb 23–Mar 1, 2026" oninput="generate()">
+          </div>
+          <div class="form-group">
+            <label>Value (AED Billion)</label>
+            <input type="number" id="w1-value" value="11.86" step="0.01" oninput="generate()">
+          </div>
+          <div class="form-group">
+            <label>Deals</label>
+            <input type="number" id="w1-txn" value="3437" oninput="generate()">
+          </div>
+        </div>
+        <p class="source-note">✅ Source: Voice of Emirates, Mar 7 2026 — DLD data</p>
+      </div>
+
+      <hr class="section-divider">
+
+      <!-- Insight & Signal -->
+      <div class="form-group">
+        <label>🧠 Insight</label>
+        <textarea id="insight" oninput="generate()">After a brief dip, the market has rebounded strongly with significant capital inflow—indicating continued investor confidence.</textarea>
+      </div>
+
+      <div class="form-group">
+        <label>📈 Signal</label>
+        <textarea id="signal" rows="2" oninput="generate()">Momentum remains strong with a clear expansion phase underway.</textarea>
+      </div>
+
+      <div class="form-group">
+        <label>💬 CTA</label>
+        <textarea id="cta" rows="2" oninput="generate()">If you'd like more detailed insights or want to explore opportunities aligned with this trend, feel free to get in touch.</textarea>
+      </div>
+
+      <button class="btn btn-primary" onclick="generate()">🔄 Regenerate Message</button>
+    </div>
+
+    <!-- Source verification -->
+    <h2>Data Sources — Verified</h2>
+    <div class="verify-grid">
+      <div class="verify-card">
+        <div class="vc-week">Week 1 · Feb 23–Mar 1</div>
+        <div class="vc-val">AED 11.86B</div>
+        <div class="vc-txn">3,437 deals</div>
+        <div class="vc-source">
+          <a href="https://www.voiceofemirates.com/en/business/2026/03/07/aed-11-86-billion-in-dubai-real-estate-transactions-in-one-week/" target="_blank">Voice of Emirates ↗</a><br>
+          Published: Mar 7, 2026 · DLD
+        </div>
+      </div>
+      <div class="verify-card">
+        <div class="vc-week">Week 2 · Mar 2–8</div>
+        <div class="vc-val">AED 8.48B</div>
+        <div class="vc-txn">2,632 deals</div>
+        <div class="vc-source">
+          <a href="https://edwardsandtowers.com/dubai-real-estate-weekly-rundown/" target="_blank">Edwards & Towers ↗</a><br>
+          Published: Mar 12, 2026 · DLD
+        </div>
+        <div class="vc-flag">⚠️ Source labels Mar 6–12</div>
+      </div>
+      <div class="verify-card">
+        <div class="vc-week">Latest · Mar 10–16</div>
+        <div class="vc-val">AED 16.11B</div>
+        <div class="vc-txn">3,544 deals</div>
+        <div class="vc-source">
+          <a href="https://www.voiceofemirates.com/en/business/2026/03/18/strong-momentum-supported-by-investor-confidence-dubai-real-estate-transactions-record-aed-16-11-billion-in-the-fourth-week-of-ramadan/" target="_blank">Voice of Emirates ↗</a><br>
+          Published: Mar 18, 2026 · DLD
+        </div>
+      </div>
+    </div>
+
+    <!-- History table -->
+    <div class="history-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Week</th>
+            <th>Dates</th>
+            <th>Value (AED)</th>
+            <th>Deals</th>
+            <th>Value WoW</th>
+            <th>Volume WoW</th>
+          </tr>
+        </thead>
+        <tbody id="history-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- RIGHT: WhatsApp Preview -->
+  <div class="preview-panel">
+    <div class="preview-header">
+      <h2>WhatsApp Preview</h2>
+      <span class="verified-badge">✅ DLD Verified</span>
+    </div>
+    <div class="wa-phone">
+      <div class="wa-topbar">
+        <div class="wa-avatar">DC</div>
+        <div class="wa-contact">
+          <div class="name">Dash Capital</div>
+          <div class="status">Investor Group · Weekly Update</div>
+        </div>
+      </div>
+      <div class="wa-body">
+        <div class="wa-bubble">
+          <div class="wa-text" id="wa-preview"></div>
+          <div class="wa-time" id="wa-time"></div>
+        </div>
+      </div>
+      <div class="copy-row">
+        <button class="btn-copy" id="copy-btn" onclick="copyMessage()">📋 Copy to WhatsApp</button>
+        <button class="btn-reset" onclick="resetToDefaults()">↺</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">✅ Copied! Paste directly into WhatsApp</div>
+
+<script>
+  // ── Load data from server on page load ──────────────────────────────────
+  async function loadData() {
+    try {
+      const res  = await fetch('/api/data');
+      const data = await res.json();
+      const w    = data.weeks;
+      if (w && w.length === 3) {
+        document.getElementById('w1-dates').value   = w[0].dates;
+        document.getElementById('w1-value').value   = w[0].value_aed_b;
+        document.getElementById('w1-txn').value     = w[0].deals;
+        document.getElementById('w2-dates').value   = w[1].dates;
+        document.getElementById('w2-value').value   = w[1].value_aed_b;
+        document.getElementById('w2-txn').value     = w[1].deals;
+        document.getElementById('w3-dates').value   = w[2].dates;
+        document.getElementById('w3-value').value   = w[2].value_aed_b;
+        document.getElementById('w3-txn').value     = w[2].deals;
+        document.getElementById('w3-offplan').value = w[2].offplan || '~68%';
+        document.getElementById('w3-label').value   = w[2].label  || '';
+      }
+      if (data.last_updated) {
+        document.getElementById('last-updated').textContent = 'Data updated: ' + data.last_updated;
+      }
+      if (data.pending_note) {
+        document.getElementById('pending-banner').style.display = 'block';
+        document.getElementById('pending-text').textContent = data.pending_note;
+      } else {
+        document.getElementById('pending-banner').style.display = 'none';
+      }
+    } catch(e) {
+      console.warn('Could not load /api/data, using defaults.');
+    }
+    generate();
+  }
+
+  async function manualRefresh() {
+    const btn = document.getElementById('refresh-btn');
+    btn.textContent = '⏳ Refreshing...';
+    btn.disabled = true;
+    try {
+      await fetch('/api/refresh', { method: 'POST' });
+      setTimeout(() => { loadData(); btn.textContent = '🔄 Refresh Now'; btn.disabled = false; }, 4000);
+    } catch(e) {
+      btn.textContent = '🔄 Refresh Now'; btn.disabled = false;
+    }
+  }
+
+  function pct(a, b) {
+    const p = ((b - a) / a * 100);
+    const sign = p >= 0 ? '+' : '';
+    return sign + p.toFixed(1) + '%';
+  }
+  function arrow(a, b) { return b >= a ? '↑' : '↓'; }
+  function fmt(n) { return parseFloat(n).toFixed(2); }
+  function fmtTxn(n) { return parseInt(n).toLocaleString('en-US'); }
+
+  function generate() {
+    const w1d = document.getElementById('w1-dates').value;
+    const w1v = parseFloat(document.getElementById('w1-value').value);
+    const w1t = parseInt(document.getElementById('w1-txn').value);
+
+    const w2d = document.getElementById('w2-dates').value;
+    const w2v = parseFloat(document.getElementById('w2-value').value);
+    const w2t = parseInt(document.getElementById('w2-txn').value);
+
+    const w3d = document.getElementById('w3-dates').value;
+    const w3v = parseFloat(document.getElementById('w3-value').value);
+    const w3t = parseInt(document.getElementById('w3-txn').value);
+    const w3op= document.getElementById('w3-offplan').value;
+
+    const insight = document.getElementById('insight').value.trim();
+    const signal  = document.getElementById('signal').value.trim();
+    const cta     = document.getElementById('cta').value.trim();
+
+    // Week-on-week calcs
+    const valWoW2 = pct(w1v, w2v);
+    const volWoW2 = pct(w1t, w2t);
+    const valWoW3 = pct(w2v, w3v);
+    const volWoW3 = pct(w2t, w3t);
+
+    const valDir2 = arrow(w1v, w2v);
+    const volDir2 = arrow(w1t, w2t);
+    const valDir3 = arrow(w2v, w3v);
+    const volDir3 = arrow(w2t, w3t);
+
+    const msg = [
+      `📊 *Weekly Dubai Real Estate Update – Dash Capital*`,
+      ``,
+      `*Last 3 Weeks Trend:*`,
+      `• ${w1d}: AED ${fmt(w1v)}B | ${fmtTxn(w1t)} deals`,
+      `• ${w2d}: AED ${fmt(w2v)}B | ${fmtTxn(w2t)} deals (${valDir2}${valWoW2} value | ${volDir2}${volWoW2} volume)`,
+      `• ${w3d}: AED ${fmt(w3v)}B | ${fmtTxn(w3t)} deals (${valDir3}${valWoW3} value | ${volDir3}${volWoW3} volume) 🚀`,
+      ``,
+      `🧠 *Insight:*`,
+      insight,
+      ``,
+      `📈 *Signal:*`,
+      signal,
+      ``,
+      `💬 *CTA:*`,
+      cta,
+      ``,
+      `_Source: Dubai Land Department (DLD)_`,
+      `_Dash Capital_`
+    ].join('\n');
+
+    document.getElementById('wa-preview').textContent = msg;
+    document.getElementById('wa-time').textContent =
+      new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+
+    // Update stat boxes
+    document.getElementById('stat-value').textContent = `AED ${fmt(w3v)}B`;
+    document.getElementById('stat-txn').textContent = fmtTxn(w3t);
+    document.getElementById('stat-val-wow').textContent = valWoW3;
+    document.getElementById('stat-vol-wow').textContent = volWoW3;
+    document.getElementById('stat-offplan').textContent = w3op;
+
+    const vwBox = document.getElementById('stat-val-wow-box');
+    const vlBox = document.getElementById('stat-vol-wow-box');
+    vwBox.className = 'stat-box ' + (w3v >= w2v ? 'green' : 'red');
+    vlBox.className = 'stat-box ' + (w3t >= w2t ? 'green' : 'red');
+
+    // History table
+    const rows = [
+      { d: w1d, v: w1v, t: w1t, vw: '—', lw: '—', isLatest: false },
+      { d: w2d, v: w2v, t: w2t, vw: valWoW2, lw: volWoW2, isLatest: false, vpos: w2v>=w1v, tpos: w2t>=w1t },
+      { d: w3d, v: w3v, t: w3t, vw: valWoW3, lw: volWoW3, isLatest: true,  vpos: w3v>=w2v, tpos: w3t>=w2t },
+    ];
+    document.getElementById('history-body').innerHTML = rows.map((r, i) => `
+      <tr>
+        <td style="color:${r.isLatest ? '#ffd600' : '#555'}">${r.isLatest ? '▶ Latest' : 'Week ' + (i+1)}</td>
+        <td class="val">${r.d}</td>
+        <td class="val">AED ${fmt(r.v)}B</td>
+        <td class="val">${fmtTxn(r.t)}</td>
+        <td class="${r.vw==='—'?'':r.vpos?'up':'dn'}">${r.vw}</td>
+        <td class="${r.lw==='—'?'':r.tpos?'up':'dn'}">${r.lw}</td>
+      </tr>`).join('');
+  }
+
+  function copyMessage() {
+    const text = document.getElementById('wa-preview').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copy-btn');
+      btn.textContent = '✅ Copied!';
+      btn.classList.add('copied');
+      const t = document.getElementById('toast');
+      t.classList.add('show');
+      setTimeout(() => { btn.textContent = '📋 Copy to WhatsApp'; btn.classList.remove('copied'); t.classList.remove('show'); }, 2800);
+    });
+  }
+
+  function resetToDefaults() { loadData(); }
+
+  loadData();
+</script>
+</body>
+</html>

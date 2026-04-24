@@ -1,0 +1,30 @@
+{
+  "last_updated": "2026-03-25",
+  "weeks": [
+    {
+      "dates": "Mar 4 – 10, 2026",
+      "value_aed_b": 13.17,
+      "deals": 3831,
+      "offplan": "~67%",
+      "label": "3rd Week of Ramadan",
+      "source": "DLD via Ahmed Elbatrawy, Mar 2026"
+    },
+    {
+      "dates": "Mar 11 – 17, 2026",
+      "value_aed_b": 16.11,
+      "deals": 3544,
+      "offplan": "~69%",
+      "label": "4th Week of Ramadan",
+      "source": "Voice of Emirates, Mar 18 2026"
+    },
+    {
+      "dates": "Latest week",
+      "value_aed_b": 8.48,
+      "deals": 2632,
+      "offplan": "~68%",
+      "label": "",
+      "source": "Edwards & Towers — DLD"
+    }
+  ],
+  "pending_note": ""
+}

@@ -10,3 +10,6 @@ env/
 # Real DLD data — keep demo only in repo
 dashboard/data/dld_transactions.csv
 dashboard/data/transactions-*.csv
+
+.claude/
+__pycache__/

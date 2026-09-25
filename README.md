@@ -2,7 +2,7 @@
 
 A small data toolkit built for decision-making on Dubai real estate. Two tools sit side-by-side: a transaction-level intelligence dashboard focused on the communities the firm invests in, and a weekly snapshot designed for investor updates.
 
-Built while leading investment and strategy at [Dash Capital](https://pavan.blog/work) (Dubai).
+Built while leading investment and strategy at Dash Capital (Dubai) by Pavan Raheja — **[see my work & get in touch → pavan.blog/work](https://www.pavan.blog/work?utm_source=github&utm_medium=readme&utm_campaign=dubai-re-intelligence)**.
 
 ## Tools
 

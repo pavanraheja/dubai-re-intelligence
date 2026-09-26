@@ -15,12 +15,13 @@ from . import tools, evidence as ev
 
 AREAS = {"emaar south": "EMAAR SOUTH", "emaar": "EMAAR SOUTH", "south": "EMAAR SOUTH",
          "creek harbour": "DUBAI CREEK HARBOUR", "creek": "DUBAI CREEK HARBOUR",
-         "dubai creek harbour": "DUBAI CREEK HARBOUR"}
+         "dubai creek harbour": "DUBAI CREEK HARBOUR", "dch": "DUBAI CREEK HARBOUR",
+         "es": "EMAAR SOUTH"}
 
 
 def _area_in(q):
     for k, v in AREAS.items():
-        if k in q:
+        if re.search(rf"\b{k}\b", q):
             return v
     return None
 
@@ -37,7 +38,8 @@ def plan_rules(question):
     if any(w in q for w in ("what can you", "coverage", "what data", "what's in the data",
                             "can you answer", "scope", "this data", "the data actually",
                             "what is in", "limitations", "what can't", "date range",
-                            "based on", "how fresh", "how recent")):
+                            "based on", "how fresh", "how recent", "come from", "source",
+                            "only cover", "included in", "dataset")):
         return [("data_coverage", {})]
     rooms = re.search(r"\b(\d\s?-?\s?(bed|br|b/r)\w*|studios?|bedrooms?)\b", q)
     if rooms or any(w in q for w in ("breakdown", "break down", "segment", "split", "villa",
@@ -47,7 +49,8 @@ def plan_rules(question):
         return [("segment_breakdown", {"area": area, "by": by, "months": months})]
     if any(w in q for w in ("trend", "over time", "direction", "moving", "growth", "rising",
                             "falling", "momentum", "monthly", "month by month",
-                            "more expensive over", "got more expensive", "over the past")):
+                            "more expensive over", "got more expensive", "over the past",
+                            "trajectory", "track", "dips", "moved")):
         return [("price_trend", {"area": area, "months": max(months, 24)})]
     if any(w in q for w in ("compare", "versus", " vs ", "better", "faster", "outperform",
                             "which community", "absorb", "two communities", "which of the two",

@@ -1,0 +1,5 @@
+dashboard/data/dld_demo.csv
+dashboard/app.py
+dashboard/generate_demo_data.py
+weekly-snapshot/
+.claude/

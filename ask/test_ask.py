@@ -33,6 +33,17 @@ def test_supply_question_is_refused():
     assert any("supply question" in r for r in a["scope_refusals"])
 
 
+def test_rent_inside_current_is_not_out_of_scope():
+    # found by the independent eval: "rent" matched inside "current"
+    a = ask("Compare the two communities at current prices")
+    assert not any("out of scope" in r for r in a["scope_refusals"])
+
+
+def test_unknown_area_is_refused_not_substituted():
+    a = ask("What's happening in Downtown Dubai?")
+    assert any("not in this extract" in r for r in a["scope_refusals"])
+
+
 def test_normal_question_is_not_refused():
     a = ask("Compare the two communities over 12 months")
     assert a["scope_refusals"] == []

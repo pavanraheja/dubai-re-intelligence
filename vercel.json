@@ -1,0 +1,8 @@
+{
+  "functions": {
+    "api/index.py": {
+      "includeFiles": "{ask/**,api/page.html,dashboard/data/dld_transactions.csv,pipeline/extract_report.json,pipeline/dld_area_names.txt,evals/summary.json}",
+      "maxDuration": 30
+    }
+  }
+}

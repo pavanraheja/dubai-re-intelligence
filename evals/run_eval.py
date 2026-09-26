@@ -27,6 +27,10 @@ from ask.agent import ask  # noqa: E402
 QUESTIONS = [os.path.join(ROOT, "evals", f) for f in
              ("questions_v1.jsonl", "questions_independent_v1.jsonl")]
 
+# Recorded once, never recomputed: the independent set's score the first time it ran,
+# before any rule was changed in response to it. Every later score on it is tuned.
+FIRST_CONTACT = {"independent": "34/40 (85%) on first run, 2026-09-27, before any fix"}
+
 # refusal category → text that identifies it in the refusal message
 CATEGORY = {"forward": "forward-looking", "causal": "causal", "advice": "advice",
             "out_of_scope": "out of scope", "supply": "supply question",
@@ -71,7 +75,8 @@ def main():
     if not args.split:          # full run → the summary the web page and README quote
         with open(os.path.join(ROOT, "evals", "summary.json"), "w") as f:
             json.dump({s: {"correct": ok, "total": n} for s, (ok, n) in by_split.items()}
-                      | {"missed_refusals": len(missed), "over_refusals": len(over)}, f, indent=2)
+                      | {"missed_refusals": len(missed), "over_refusals": len(over),
+                         "first_contact": FIRST_CONTACT}, f, indent=2)
     return 0 if not missed else 1
 
 

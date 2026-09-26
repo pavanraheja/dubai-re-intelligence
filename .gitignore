@@ -11,4 +11,5 @@ env/
 dashboard/data/transactions-*.csv
 
 .claude/
+.vercel
 __pycache__/

@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ask Dubai Sales Data</title>
+<meta name="description" content="Ask Dubai Land Department sales data a question — every answer carries its basis, a confidence grade, and a refusal when the data cannot support it.">
+<style>
+:root{--bg:#f7f7f5;--card:#fff;--ink:#16181d;--muted:#5d6470;--line:#e3e4e8;--accent:#0f6e66;
+--refuse-bg:#fdecec;--refuse-ink:#9b1c1c;--warn-bg:#fff6e0;--warn-ink:#7a5200;--ok-bg:#e7f5f2;--ok-ink:#0f6e66;--chip:#eef0f2;--on-accent:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#111316;--card:#1a1d22;--ink:#e8eaed;--muted:#9aa1ab;--line:#2c3037;--accent:#4fc1b4;
+--refuse-bg:#3a1a1a;--refuse-ink:#ffb4b4;--warn-bg:#352a10;--warn-ink:#f3d28a;--ok-bg:#12302c;--ok-ink:#7fdccf;--chip:#252a31;--on-accent:#0b1f1c}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif}
+main{max-width:860px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:24px;line-height:1.25;margin:0 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0 0 20px}
+.basis{font-size:13px;color:var(--muted);border-left:3px solid var(--accent);padding:2px 0 2px 10px;margin-bottom:22px}
+form{display:flex;gap:8px}
+input{flex:1;min-width:0;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit}
+input:focus{outline:2px solid var(--accent);outline-offset:1px}
+button{padding:12px 18px;border:0;border-radius:10px;background:var(--accent);color:var(--on-accent);font:inherit;font-weight:600;cursor:pointer}
+.chips{margin:14px 0 26px}
+.chips .lab{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:10px 0 6px}
+.chip{display:inline-block;margin:0 6px 6px 0;padding:6px 10px;border-radius:999px;background:var(--chip);color:var(--ink);font-size:13px;cursor:pointer;border:1px solid transparent}
+.chip:hover{border-color:var(--accent)}
+.chip.no::before{content:"⊘ ";color:var(--refuse-ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 18px 14px;margin-bottom:14px}
+.q{font-weight:600;margin-bottom:12px}
+.refuse{background:var(--refuse-bg);color:var(--refuse-ink);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.refuse b{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+.instead{font-size:13px;color:var(--muted);margin:14px 0 8px}
+.tool{font-size:12px;color:var(--muted);font-family:ui-monospace,Menlo,monospace;margin:14px 0 6px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:right;padding:7px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{font-weight:600;color:var(--muted);font-size:12px}
+.scroll{overflow-x:auto}
+.ev{margin-top:10px;font-size:13px}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-weight:700;font-size:12px;margin-right:6px}
+.HIGH{background:var(--ok-bg);color:var(--ok-ink)}.MEDIUM,.LOW{background:var(--warn-bg);color:var(--warn-ink)}.INSUFFICIENT{background:var(--refuse-bg);color:var(--refuse-ink)}
+.caveat{background:var(--warn-bg);color:var(--warn-ink);border-radius:8px;padding:6px 10px;margin-top:6px}
+.src{color:var(--muted)}
+svg{width:100%;height:auto;display:block}
+.how{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+.how h2{font-size:15px;color:var(--ink);margin:0 0 8px}
+.how li{margin-bottom:4px}
+a{color:var(--accent)}
+.muted{color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+  <h1>Ask Dubai sales data — and be told when not to trust the answer</h1>
+  <p class="sub">Emaar South and Dubai Creek Harbour. Every number carries its basis and a confidence grade. Questions the data cannot support are refused, with the reason.</p>
+  <div class="basis" id="basis">Loading data basis…</div>
+
+  <form id="f"><input id="q" placeholder="e.g. Compare the two communities" autocomplete="off" aria-label="Question"><button>Ask</button></form>
+
+  <div class="chips">
+    <div class="lab">Answerable</div>
+    <span class="chip">Compare the two communities</span>
+    <span class="chip">Split Creek Harbour sales by bedrooms</span>
+    <span class="chip">Monthly price trend in Emaar South</span>
+    <span class="chip">What can this data answer?</span>
+    <div class="lab">Refused on purpose</div>
+    <span class="chip no">Is Emaar South absorbing supply faster than Creek Harbour?</span>
+    <span class="chip no">Will Creek Harbour prices keep rising?</span>
+    <span class="chip no">Should I buy in Emaar South?</span>
+    <span class="chip no">Why did Creek Harbour prices rise?</span>
+    <span class="chip no">What's happening in Downtown Dubai?</span>
+  </div>
+
+  <div id="out"></div>
+
+  <section class="how">
+    <h2>How it works</h2>
+    <ul>
+      <li><b>The planner picks a tool; it never produces a number.</b> Four pandas functions compute everything. A model can be swapped in as planner and cannot override a refusal.</li>
+      <li><b>Refusals are rules, written down.</b> Forward-looking, causal, advice, out-of-scope, supply and unknown-area questions are refused before anything is computed. Thin samples (&lt;30 rows) get no answer at all.</li>
+      <li><b>Measured, not asserted.</b> <span id="evalline">A labelled question set scores every change.</span></li>
+      <li><b>Known limits:</b> current calendar year only (the public API serves no earlier data), so year-on-year is not computed; the registry records townhouses as villas; Emaar South is defined by project name, and every excluded project is listed in the extract report.</li>
+    </ul>
+    <p>Source code, eval set and community definitions: <a href="https://github.com/pavanraheja/dubai-re-intelligence">github.com/pavanraheja/dubai-re-intelligence</a></p>
+  </section>
+</main>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const title = s => esc(String(s).toLowerCase().replace(/\b\w/g, c => c.toUpperCase()));
+const n = v => v == null ? "—" : Number(v).toLocaleString("en-US", {maximumFractionDigits: 1});
+
+fetch("/api/meta").then(r => r.json()).then(m => {
+  $("#basis").innerHTML = `<b>${n(m.rows)}</b> sales · ${esc(m.from)} → ${esc(m.to)} · ${esc(m.source)}`;
+  if (m.eval) {
+    const parts = Object.entries(m.eval).filter(([k, v]) => v && v.total)
+      .map(([k, v]) => `${k} ${v.correct}/${v.total}`);
+    const fc = m.eval.first_contact && m.eval.first_contact.independent;
+    $("#evalline").textContent = `Labelled question sets: ${parts.join(" · ")} · missed refusals ${m.eval.missed_refusals}.` +
+      (fc ? ` The independent set was written by a separate model that never saw the code; it scored ${fc}. Later scores on it are after tuning.` : "");
+  }
+});
+
+function table(head, rows) {
+  return `<div class="scroll"><table><tr>${head.map(h => `<th>${h}</th>`).join("")}</tr>` +
+    rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join("")}</tr>`).join("") + `</table></div>`;
+}
+
+function spark(series) {
+  const k = Object.keys(series), v = Object.values(series);
+  if (v.length < 2) return "";
+  const W = 600, H = 120, P = 28, L = 64, lo = Math.min(...v), hi = Math.max(...v), span = hi - lo || 1;
+  const x = i => L + i * (W - L - P) / (v.length - 1), y = val => H - P - (val - lo) / span * (H - 2 * P);
+  const d = v.map((val, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(val).toFixed(1)}`).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="monthly median price per sqft">
+    <path d="${d}" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+    ${v.map((val, i) => `<circle cx="${x(i)}" cy="${y(val)}" r="3" fill="var(--accent)"><title>${k[i]}: AED ${n(val)}/sqft</title></circle>`).join("")}
+    <text x="${L}" y="${H - 6}" font-size="12" fill="var(--muted)">${k[0]}</text>
+    <text x="${W - P}" y="${H - 6}" font-size="12" fill="var(--muted)" text-anchor="end">${k[k.length - 1]}</text>
+    <text x="4" y="${y(hi) + 4}" font-size="12" fill="var(--muted)">${n(hi)}</text>
+    <text x="4" y="${y(lo) + 4}" font-size="12" fill="var(--muted)">${n(lo)}</text></svg>`;
+}
+
+function body(tool, d) {
+  if (tool === "compare_communities")
+    return table(["Community", "Sales", "Median AED/sqft", "Median price AED", "Off-plan", "YoY"],
+      Object.entries(d).map(([a, v]) => [title(a), n(v.transactions), n(v.median_ppsf), n(v.median_price_aed),
+        n(v.offplan_share_pct) + "%", v.yoy_ppsf_pct == null ? "not computed" : (v.yoy_ppsf_pct > 0 ? "+" : "") + v.yoy_ppsf_pct + "%"]));
+  if (tool === "price_trend") {
+    const s = d.monthly_median_ppsf || {}, ks = Object.keys(s);
+    if (!ks.length) return `<p class="muted">No month has enough deals to plot.</p>`;
+    const ch = d.first ? ((d.last / d.first - 1) * 100).toFixed(1) : null;
+    return `<p><b>${title(d.area)}</b>: AED ${n(d.first)}/sqft (${ks[0]}) → AED ${n(d.last)}/sqft (${ks[ks.length - 1]})${ch ? ` · <b>${ch > 0 ? "+" : ""}${ch}%</b> over the window` : ""}</p>` + spark(s);
+  }
+  if (tool === "segment_breakdown")
+    return `<p class="muted">${title(d.area)} · by ${esc(d.by === "rooms" ? "bedrooms" : "property type")}</p>` +
+      table(["Segment", "Sales", "Median AED/sqft", "Value AED m"],
+        Object.entries(d.segments || {}).map(([s, v]) => [esc(s), n(v.txns), n(v.median_ppsf), n(v.value_aed_m)]));
+  if (tool === "data_coverage")
+    return `<p>${n(d.rows)} sales · ${d.areas.map(title).join(", ")} · ${esc(d.from)} → ${esc(d.to)}</p>
+      <p class="muted">Not in this source: ${d.not_in_source.map(esc).join(", ")}</p>`;
+  return "";
+}
+
+function render(a) {
+  let h = `<div class="card"><div class="q">${esc(a.question)}</div>`;
+  for (const r of a.scope_refusals) h += `<div class="refuse"><b>Refused</b>${esc(r)}</div>`;
+  if (a.scope_refusals.length) h += `<div class="instead">What the data can show instead — this does <b>not</b> answer the question asked:</div>`;
+  for (const r of a.results) {
+    const e = r.evidence;
+    h += `<div class="tool">${esc(r.tool)}</div>`;
+    h += e.confidence === "INSUFFICIENT" ? `<p class="refuse">No answer given — the data does not support one.</p>` : body(r.tool, r.data);
+    h += `<div class="ev"><span class="badge ${esc(e.confidence)}">${esc(e.confidence)}</span>
+      <span class="src">${n(e.rows)} rows${e.window ? ` · ${esc(e.window[0])} → ${esc(e.window[1])}` : ""} · ${esc(e.source)}</span>
+      ${e.caveats.map(c => `<div class="caveat">${esc(c)}</div>`).join("")}
+      ${e.refusals.map(c => `<div class="refuse">${esc(c)}</div>`).join("")}</div>`;
+  }
+  h += `<p class="muted" style="font-size:12px;margin-top:12px">planner: ${esc(a.planner)} · numbers computed in pandas, not generated by a model</p></div>`;
+  $("#out").innerHTML = h;
+}
+
+async function go(q) {
+  if (!q.trim()) return;
+  $("#q").value = q;
+  $("#out").innerHTML = `<p class="muted">Working…</p>`;
+  const r = await fetch("/api/ask?q=" + encodeURIComponent(q));
+  render(await r.json());
+}
+$("#f").addEventListener("submit", e => { e.preventDefault(); go($("#q").value); });
+document.querySelectorAll(".chip").forEach(c => c.addEventListener("click", () => go(c.textContent)));
+go("Compare the two communities");
+</script>
+</body>
+</html>

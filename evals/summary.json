@@ -1,0 +1,19 @@
+{
+  "dev": {
+    "correct": 33,
+    "total": 33
+  },
+  "holdout": {
+    "correct": 23,
+    "total": 23
+  },
+  "independent": {
+    "correct": 40,
+    "total": 40
+  },
+  "missed_refusals": 0,
+  "over_refusals": 0,
+  "first_contact": {
+    "independent": "34/40 (85%) on first run, 2026-09-27, before any fix"
+  }
+}

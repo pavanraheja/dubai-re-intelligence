@@ -2,7 +2,7 @@
 Dubai Real Estate Intelligence Dashboard
 ══════════════════════════════════════════
 Communities: Emaar South | Dubai Creek Harbour
-Data:        DLD transactions (demo data mirrors real DLD format)
+Data:        real DLD extract (pipeline/fetch_dld.py); synthetic demo data only if it is missing
              Drop real DLD CSV into data/ folder → auto-loaded
 
 To use real data:
@@ -101,8 +101,9 @@ def load_data():
     frames   = []
     is_demo  = not has_real
 
-    # Always load demo for historical context (2020-2025)
-    if os.path.exists(DEMO_CSV):
+    # Synthetic demo data is used ONLY when no real extract exists — never blended
+    # into real charts, because mixing generated rows with real ones hides which is which.
+    if not has_real and os.path.exists(DEMO_CSV):
         demo = normalise_df(pd.read_csv(DEMO_CSV, low_memory=False))
         demo["source"] = "demo"
         frames.append(demo)
@@ -125,7 +126,9 @@ def load_data():
     # Filter to our target communities + sales only
     df = df[df["area"].isin(COMMUNITIES)]
     if "trans_group" in df.columns:
-        df = df[df["trans_group"].astype(str).str.upper().str.contains("SALE|SALES", na=False)]
+        # rows without a trans_group (the real extract is sales-only by construction) are kept
+        df = df[df["trans_group"].isna() |
+                df["trans_group"].astype(str).str.upper().str.contains("SALE|SALES", na=False)]
     df = df[df["price_aed"] > 10_000]
     df = df[df["ppsf"].between(100, 20_000)]
 
@@ -163,7 +166,7 @@ def pct_change(new, old):
 
 def signal(df_community):
     """
-    Buy / Sell / Hold signal based on:
+    Momentum label (descriptive, not a recommendation) based on:
     - 3-month price momentum vs 12-month avg
     - Transaction volume trend
     - Off-plan ratio (high = developer confidence)
@@ -212,11 +215,12 @@ def signal(df_community):
 
     if offplan_ratio > 60: reasons.append(f"High developer activity ({offplan_ratio:.0f}% off-plan)")
 
-    if score >= 3:   sig, color = "STRONG BUY",  "#00e676"
-    elif score >= 1: sig, color = "BUY",          "#00c853"
-    elif score == 0: sig, color = "HOLD",         "#ffd600"
-    elif score == -1:sig, color = "WATCH",        "#ff9100"
-    else:            sig, color = "WAIT",         "#ff1744"
+    # Descriptive, not advice: the data can show momentum, not whether to buy.
+    if score >= 3:   sig, color = "STRONG MOMENTUM", "#00e676"
+    elif score >= 1: sig, color = "RISING",          "#00c853"
+    elif score == 0: sig, color = "FLAT",            "#ffd600"
+    elif score == -1:sig, color = "SOFTENING",       "#ff9100"
+    else:            sig, color = "FALLING",         "#ff1744"
 
     return sig, " · ".join(reasons), color
 
@@ -678,7 +682,7 @@ HTML = r"""
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-    <span class="demo-badge" id="demoBadge">⚠ DEMO DATA — Add real DLD CSV to /data/</span>
+    <span class="demo-badge" id="demoBadge">⚠ SYNTHETIC DEMO DATA — not real transactions. Run pipeline/fetch_dld.py</span>
     <span class="last-updated" id="lastUpdated">Loading...</span>
   </div>
 </div>
@@ -760,7 +764,11 @@ HTML = r"""
 
   <!-- ROI & RENTAL YIELD SECTION -->
   <div class="roi-section">
-    <h2>💰 ROI & Rental Yield Analysis</h2>
+    <h2>💰 ROI & Rental Yield — MODELLED</h2>
+    <p style="background:#352a10;color:#f3d28a;border-radius:8px;padding:10px 14px;font-size:12px;margin:0 0 16px">
+      ⚠ Assumption, not data: rents are a hard-coded table of 2025 estimates (<code>ANNUAL_RENTS</code> in app.py) —
+      DLD sales records contain no rents. Prices are real; yields and ROI below are only as good as those rent assumptions.
+      This is why the <code>ask/</code> layer refuses yield questions.</p>
 
     <!-- ROI Summary Cards -->
     <div class="roi-cards" id="roiCards"></div>

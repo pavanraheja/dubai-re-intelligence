@@ -32,7 +32,8 @@ CAUSAL = (r"\bwhy\b", r"\bbecause\b", r"\bcaus", r"\bdrove\b", r"\bdriv(en|er|er
 ADVICE = (r"\bshould (i|we)\b", r"\bgood investment\b", r"\bworth (buying|it)\b",
           r"\brecommend", r"\bover-?priced\b", r"\bunder-?priced\b", r"\bover-?valued\b",
           r"\bunder-?valued\b", r"\bfair value\b", r"\bbubble\b", r"\bpeak\b", r"\bbottom\b",
-          r"\btime to (buy|sell)\b", r"\bbuy or\b")
+          r"\btime to (buy|sell)\b", r"\bbuy or\b", r"\bgood value\b", r"\bvalue or\b",
+          r"\b(smarter|better|best) (buy|investment|bet)\b", r"\bwait to buy\b")
 OUT_OF_SCOPE = ("rent", "rental", "yield", "mortgage", "service charge",
                 "population", "people live", "residents", "visa", "interest rate")
 # Supply needs completions / unsold inventory. DLD sales records are the demand side only.
@@ -143,7 +144,8 @@ def scope_refusals(question):
                    "judgement this data cannot make. I can show the numbers that judgement "
                    "would use")
     for w in OUT_OF_SCOPE:
-        if w in q:
+        # word boundary: "rent" must not fire inside "current" (found by the independent eval)
+        if re.search(rf"\b{w}", q):
             out.append(f"'{w}' is not in DLD sales transactions — out of scope for this dataset")
             break
     if _any(SUPPLY, q):

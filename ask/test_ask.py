@@ -28,6 +28,11 @@ def test_out_of_scope_is_refused():
     assert any("out of scope" in r for r in a["scope_refusals"])
 
 
+def test_supply_question_is_refused():
+    a = ask("Is Emaar South absorbing supply faster than Dubai Creek Harbour?")
+    assert any("supply question" in r for r in a["scope_refusals"])
+
+
 def test_normal_question_is_not_refused():
     a = ask("Compare the two communities over 12 months")
     assert a["scope_refusals"] == []

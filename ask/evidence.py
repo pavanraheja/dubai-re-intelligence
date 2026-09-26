@@ -24,6 +24,9 @@ FORWARD_WORDS = ("next month", "next year", "next 6", "next six", "forecast",
 CAUSAL_WORDS = ("why", "because", "caused", "reason for", "driver of")
 OUT_OF_SCOPE = ("rent", "rental", "yield", "mortgage", "service charge",
                 "population", "visa", "interest rate")
+# Supply needs completions / unsold inventory. DLD sales records are the demand side only.
+SUPPLY_WORDS = ("supply", "absorb", "absorption", "inventory", "unsold", "oversupply",
+                "pipeline", "handover", "completions", "stock")
 
 
 @dataclass
@@ -102,4 +105,8 @@ def scope_refusals(question):
         if w in q:
             out.append(f"'{w}' is not in DLD sales transactions — out of scope for this dataset")
             break
+    if any(w in q for w in SUPPLY_WORDS):
+        out.append("supply question — absorption needs units delivered and unsold stock; "
+                   "DLD sales records only show the demand side. I can show deal volume, "
+                   "which is not absorption")
     return out

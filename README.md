@@ -50,7 +50,7 @@ An agent layer over the same DLD transactions. You ask in plain English; it pick
 ```bash
 python ask.py "Is Emaar South absorbing supply faster than Dubai Creek Harbour?"
 python ask.py --demo        # the full question set, including the ones it refuses
-python ask/test_ask.py      # 9 tests, all on refusal and evidence behaviour
+python ask/test_ask.py      # 10 tests, all on refusal and evidence behaviour
 ```
 
 No API key needed — a rule-based planner ships by default. Set `ANTHROPIC_API_KEY` and Claude picks the tools instead; **the numbers and the refusals are identical either way**, because the model only chooses which tool runs. It never produces a number and it cannot override a refusal.
@@ -80,6 +80,7 @@ Q: Which community will perform better next year?
 | Forward-looking ("next year", "forecast", "will") | The source is transaction history. It contains no forward data. |
 | Causal ("why did prices rise") | Transactions show association, not cause. |
 | Out of scope (rents, yields, mortgages, population) | Not in DLD sales records. |
+| Supply / absorption ("absorbing supply", inventory, handovers) | Absorption needs units delivered and unsold stock. Sales records are the demand side only. |
 | Thin sample (smallest group < 30 rows) | No answer is given at all — not a low-confidence one. |
 
 **What it downgrades rather than refuses**

@@ -9,6 +9,8 @@ Every answer returned by this tool carries:
 
 Design rule: an answer without stated failure conditions is a story, not a finding.
 """
+import os
+import re
 from dataclasses import dataclass, field
 from datetime import datetime
 
@@ -19,14 +21,36 @@ STALE_DAYS = 180          # data older than this is flagged, not silently used
 OFFPLAN_GAP_PP = 15       # off-plan share gap that breaks like-for-like comparison
 
 # Question shapes this dataset cannot answer, whatever the model thinks.
-FORWARD_WORDS = ("next month", "next year", "next 6", "next six", "forecast",
-                 "predict", "will it", "going to", "future", "2027", "2028")
-CAUSAL_WORDS = ("why", "because", "caused", "reason for", "driver of")
+# Regex with word boundaries: "will" must not fire inside "Willow", "why" inside "whyte".
+FORWARD = (r"\bwill\b", r"\bwon't\b", r"\bgoing to\b", r"\bheading\b", r"\boutlook\b",
+           r"\bforecast", r"\bpredict", r"\bprojection", r"\bexpect", r"\bfuture\b",
+           r"\bnext (week|month|quarter|year|\d+|six|twelve)\b", r"\bkeep (going|rising|falling)\b",
+           r"\b20(2[7-9]|3\d)\b")
+CAUSAL = (r"\bwhy\b", r"\bbecause\b", r"\bcaus", r"\bdrove\b", r"\bdriv(en|er|ers|ing)\b",
+          r"\bbehind\b", r"\bdue to\b", r"\bpush(ed)? (up|down)\b", r"\bimpact of\b",
+          r"\beffect of\b", r"\breason\b")
+ADVICE = (r"\bshould (i|we)\b", r"\bgood investment\b", r"\bworth (buying|it)\b",
+          r"\brecommend", r"\bover-?priced\b", r"\bunder-?priced\b", r"\bover-?valued\b",
+          r"\bunder-?valued\b", r"\bfair value\b", r"\bbubble\b", r"\bpeak\b", r"\bbottom\b",
+          r"\btime to (buy|sell)\b", r"\bbuy or\b")
 OUT_OF_SCOPE = ("rent", "rental", "yield", "mortgage", "service charge",
-                "population", "visa", "interest rate")
+                "population", "people live", "residents", "visa", "interest rate")
 # Supply needs completions / unsold inventory. DLD sales records are the demand side only.
-SUPPLY_WORDS = ("supply", "absorb", "absorption", "inventory", "unsold", "oversupply",
-                "pipeline", "handover", "completions", "stock")
+SUPPLY = (r"\bsupply\b", r"\boversupply\b", r"\babsorb", r"\binventory\b", r"\bunsold\b",
+          r"\bpipeline\b", r"\bhand(ed)? ?over", r"\bcompletions?\b", r"\bstock\b",
+          r"\bnew units\b")
+
+# Places people ask about that this extract does not cover. Registry names come from
+# pipeline/dld_area_names.txt (written by fetch_dld.py); these are the marketing names
+# people actually type, which the registry does not use.
+OTHER_PLACES = ("downtown", "dubai marina", "marina", "jvc", "jumeirah village", "jlt",
+                "palm jumeirah", "the palm", "business bay", "dubai hills", "arabian ranches",
+                "damac hills", "damac lagoons", "sobha hartland", "mbr city", "meydan",
+                "town square", "silicon oasis", "motor city", "sports city", "al furjan",
+                "discovery gardens", "dubai south", "expo city", "azizi venice", "al barsha",
+                "deira", "bur dubai", "mirdif", "jumeirah", "city walk", "bluewaters",
+                "dubai islands", "tilal al ghaf", "the valley", "the springs", "the lakes")
+OUR_NAMES = ("emaar south", "dubai creek harbour", "creek harbour", "al khairan first")
 
 
 @dataclass
@@ -91,22 +115,48 @@ def check_like_for_like(ev, shares):
     return ev
 
 
+def _any(patterns, q):
+    return any(re.search(p, q) for p in patterns)
+
+
+def _area_names():
+    path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                        "pipeline", "dld_area_names.txt")
+    names = set(OTHER_PLACES)
+    if os.path.exists(path):
+        names |= {l.strip().lower() for l in open(path) if len(l.strip()) > 3}
+    return {n for n in names if n not in OUR_NAMES and n != "dubai"}
+
+
 def scope_refusals(question):
     """Refuse before computing. Cheaper, and honest about what the source contains."""
     q = question.lower()
     out = []
-    if any(w in q for w in FORWARD_WORDS):
+    if _any(FORWARD, q):
         out.append("forward-looking question — this source is transaction history, "
                    "it contains no forward data. I can show the trend, not the forecast")
-    if any(q.startswith(w) or f" {w} " in q for w in CAUSAL_WORDS):
+    if _any(CAUSAL, q):
         out.append("causal question — transactions show association, not cause. "
                    "I can show what moved together, not what caused what")
+    if _any(ADVICE, q):
+        out.append("advice question — whether to buy, or whether a price is 'right', is a "
+                   "judgement this data cannot make. I can show the numbers that judgement "
+                   "would use")
     for w in OUT_OF_SCOPE:
         if w in q:
             out.append(f"'{w}' is not in DLD sales transactions — out of scope for this dataset")
             break
-    if any(w in q for w in SUPPLY_WORDS):
+    if _any(SUPPLY, q):
         out.append("supply question — absorption needs units delivered and unsold stock; "
                    "DLD sales records only show the demand side. I can show deal volume, "
                    "which is not absorption")
+    stripped = q
+    for n in OUR_NAMES:
+        stripped = stripped.replace(n, " ")
+    for name in sorted(_area_names(), key=len, reverse=True):
+        if re.search(rf"\b{re.escape(name)}\b", stripped):
+            out.append(f"'{name.title()}' is not in this extract — it covers Emaar South and "
+                       f"Dubai Creek Harbour only. Answering with those would answer a "
+                       f"different question")
+            break
     return out

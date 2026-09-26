@@ -21,8 +21,16 @@ def load():
     if "df" in _cache:
         return _cache["df"], _cache["source"]
 
-    path, source = (REAL, "DLD transactions (real)") if os.path.exists(REAL) \
-        else (DEMO, "DLD demo extract (real format)")
+    if os.path.exists(REAL):
+        path, source = REAL, "DLD open data, real sales"
+        report = os.path.join(os.path.dirname(DATA), "..", "pipeline", "extract_report.json")
+        try:
+            import json
+            source += f" · pulled {json.load(open(report))['pulled_at'][:10]}"
+        except Exception:
+            pass
+    else:
+        path, source = DEMO, "SYNTHETIC demo data — generated, not real transactions"
     df = pd.read_csv(path)
     df.columns = [c.strip().lower() for c in df.columns]
 
@@ -86,7 +94,10 @@ def compare_communities(months=12, areas=None):
     e = ev.grade(rows, _window(recent), source)
     e = ev.check_like_for_like(e, shares)
     for a, r in result.items():
-        if r["yoy_ppsf_pct"] is not None and r["prior_period_rows"] < ev.MIN_ROWS_ANSWER:
+        if r["prior_period_rows"] == 0:
+            e.caveats.append(f"{a.title()}: no prior-period rows in this extract "
+                             f"(starts {df['date'].min():%b %Y}) — year-on-year not computed")
+        elif r["yoy_ppsf_pct"] is not None and r["prior_period_rows"] < ev.MIN_ROWS_ANSWER:
             e.caveats.append(f"{a.title()} year-on-year based on only "
                              f"{r['prior_period_rows']} prior-period rows — directional only")
     return result, e

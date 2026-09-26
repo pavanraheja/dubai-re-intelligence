@@ -36,18 +36,24 @@ def plan_rules(question):
 
     if any(w in q for w in ("what can you", "coverage", "what data", "what's in the data",
                             "can you answer", "scope", "this data", "the data actually",
-                            "what is in", "limitations", "what can't")):
+                            "what is in", "limitations", "what can't", "date range",
+                            "based on", "how fresh", "how recent")):
         return [("data_coverage", {})]
-    if any(w in q for w in ("compare", "versus", " vs ", "better", "faster", "outperform",
-                            "which community", "absorb")):
-        return [("compare_communities", {"months": months})]
-    if any(w in q for w in ("trend", "over time", "direction", "moving", "growth", "rising",
-                            "falling", "momentum")):
-        return [("price_trend", {"area": area, "months": max(months, 24)})]
-    if any(w in q for w in ("breakdown", "segment", "type", "apartment", "villa", "townhouse",
-                            "studio", "bedroom", "split", "where does the money")):
-        by = "rooms" if any(w in q for w in ("bedroom", "studio", "rooms")) else "property_type"
+    rooms = re.search(r"\b(\d\s?-?\s?(bed|br|b/r)\w*|studios?|bedrooms?)\b", q)
+    if rooms or any(w in q for w in ("breakdown", "break down", "segment", "split", "villa",
+                                     "apartment", "townhouse", "property type",
+                                     "where does the money", "trades most")):
+        by = "rooms" if rooms else "property_type"
         return [("segment_breakdown", {"area": area, "by": by, "months": months})]
+    if any(w in q for w in ("trend", "over time", "direction", "moving", "growth", "rising",
+                            "falling", "momentum", "monthly", "month by month",
+                            "more expensive over", "got more expensive", "over the past")):
+        return [("price_trend", {"area": area, "months": max(months, 24)})]
+    if any(w in q for w in ("compare", "versus", " vs ", "better", "faster", "outperform",
+                            "which community", "absorb", "two communities", "which of the two",
+                            "side by side", "cheaper", "more expensive", "transactions",
+                            "deals", "stack up")):
+        return [("compare_communities", {"months": months})]
     # default: give the comparison plus coverage, rather than guessing
     return [("compare_communities", {"months": months}), ("data_coverage", {})]
 

@@ -7,8 +7,7 @@ __pycache__/
 venv/
 env/
 
-# Real DLD data — keep demo only in repo
-dashboard/data/dld_transactions.csv
+# Real DLD extract IS committed (public open data, ~350 KB) so the demo runs on real rows.
 dashboard/data/transactions-*.csv
 
 .claude/

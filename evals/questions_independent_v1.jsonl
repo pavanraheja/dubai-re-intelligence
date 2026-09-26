@@ -1,0 +1,40 @@
+{"id": "x01", "split": "independent", "q": "emaar south vs creek harbour, which one moves more units?", "expect": ["answer:compare_communities"]}
+{"id": "x02", "split": "independent", "q": "side by side on off-plan % between the two communities pls", "expect": ["answer:compare_communities"]}
+{"id": "x03", "split": "independent", "q": "hows ES psf compare to DCH rn", "expect": ["answer:compare_communities"]}
+{"id": "x04", "split": "independent", "q": "quick comparison - avg sale volume creek harbour vs emaar south for 2026", "expect": ["answer:compare_communities"]}
+{"id": "x05", "split": "independent", "q": "monthly psf trend in dubai creek harbour jan-sep", "expect": ["answer:price_trend"]}
+{"id": "x06", "split": "independent", "q": "how has emaar south price per sqft moved month by month", "expect": ["answer:price_trend"]}
+{"id": "x07", "split": "independent", "q": "psf trajectory for DCH this year, any dips?", "expect": ["answer:price_trend"]}
+{"id": "x08", "split": "independent", "q": "track median price/sqft for emaar south over the last 9 months", "expect": ["answer:price_trend"]}
+{"id": "x09", "split": "independent", "q": "split emaar south sales by apartment vs villa", "expect": ["answer:segment_breakdown"]}
+{"id": "x10", "split": "independent", "q": "bedroom breakdown for creek harbour transactions", "expect": ["answer:segment_breakdown"]}
+{"id": "x11", "split": "independent", "q": "how many studio vs 1bed vs 2bed sold in emaar south", "expect": ["answer:segment_breakdown"]}
+{"id": "x12", "split": "independent", "q": "villas by bedroom count in DCH", "expect": ["answer:segment_breakdown"]}
+{"id": "x13", "split": "independent", "q": "what's the date range on this dataset", "expect": ["answer:data_coverage"]}
+{"id": "x14", "split": "independent", "q": "where does this sales data come from, DLD?", "expect": ["answer:data_coverage"]}
+{"id": "x15", "split": "independent", "q": "does this only cover these 2 communities or more", "expect": ["answer:data_coverage"]}
+{"id": "x16", "split": "independent", "q": "off plan and ready both included in here?", "expect": ["answer:data_coverage"]}
+{"id": "x17", "split": "independent", "q": "where's emaar south psf headed next quarter", "expect": ["refuse:forward"]}
+{"id": "x18", "split": "independent", "q": "will DCH prices go up by dec", "expect": ["refuse:forward"]}
+{"id": "x19", "split": "independent", "q": "price forecast for creek harbour 2027", "expect": ["refuse:forward"]}
+{"id": "x20", "split": "independent", "q": "should i wait to buy before prices in emaar south climb further", "expect": ["refuse:forward", "refuse:advice"]}
+{"id": "x21", "split": "independent", "q": "why'd prices spike in emaar south in june", "expect": ["refuse:causal"]}
+{"id": "x22", "split": "independent", "q": "whats driving the offplan boom in creek harbour", "expect": ["refuse:causal"]}
+{"id": "x23", "split": "independent", "q": "why are villas beating apartments on price growth in ES", "expect": ["refuse:causal"]}
+{"id": "x24", "split": "independent", "q": "what caused the volume drop in DCH in august", "expect": ["refuse:causal"]}
+{"id": "x25", "split": "independent", "q": "should i buy a 2br in emaar south rn", "expect": ["refuse:advice"]}
+{"id": "x26", "split": "independent", "q": "is creek harbour overpriced atm", "expect": ["refuse:advice"]}
+{"id": "x27", "split": "independent", "q": "which is the smarter buy, emaar south or creek harbour", "expect": ["refuse:advice", "answer:compare_communities"]}
+{"id": "x28", "split": "independent", "q": "good value or nah - apartments in DCH at current price", "expect": ["refuse:advice"]}
+{"id": "x29", "split": "independent", "q": "avg rental yield for emaar south apts", "expect": ["refuse:out_of_scope"]}
+{"id": "x30", "split": "independent", "q": "service charges on creek harbour towers, how much", "expect": ["refuse:out_of_scope"]}
+{"id": "x31", "split": "independent", "q": "mortgage payment estimate for a villa in ES", "expect": ["refuse:out_of_scope"]}
+{"id": "x32", "split": "independent", "q": "population growth projections around creek harbour", "expect": ["refuse:out_of_scope"]}
+{"id": "x33", "split": "independent", "q": "unsold inventory count in emaar south rn", "expect": ["refuse:supply"]}
+{"id": "x34", "split": "independent", "q": "handover schedule for DCH projects this yr", "expect": ["refuse:supply"]}
+{"id": "x35", "split": "independent", "q": "oversupply risk in emaar south?", "expect": ["refuse:supply"]}
+{"id": "x36", "split": "independent", "q": "how much new supply hits DCH in the next 12mo", "expect": ["refuse:supply", "refuse:forward"]}
+{"id": "x37", "split": "independent", "q": "downtown vs emaar south on psf", "expect": ["refuse:unknown_area", "answer:compare_communities"]}
+{"id": "x38", "split": "independent", "q": "median psf in JVC", "expect": ["refuse:unknown_area"]}
+{"id": "x39", "split": "independent", "q": "got sales data for dubai marina too?", "expect": ["refuse:unknown_area"]}
+{"id": "x40", "split": "independent", "q": "compare creek harbour to business bay", "expect": ["refuse:unknown_area", "answer:compare_communities"]}

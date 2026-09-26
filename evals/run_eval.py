@@ -14,6 +14,9 @@ Two error types, reported separately because they do not cost the same:
 Rules: the dev split is what the refusal rules were tuned on. The holdout split
 was written at the same time and not used for tuning, so its score is the one
 to quote.
+The independent split (questions_independent_v1.jsonl) was written by a separate
+model given only the tool's description — no code, no rules — and committed
+before it was ever run. Its first-contact score is recorded in the README.
 """
 import argparse, json, os, sys
 
@@ -21,7 +24,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from ask.agent import ask  # noqa: E402
 
-QUESTIONS = os.path.join(ROOT, "evals", "questions_v1.jsonl")
+QUESTIONS = [os.path.join(ROOT, "evals", f) for f in
+             ("questions_v1.jsonl", "questions_independent_v1.jsonl")]
 
 # refusal category → text that identifies it in the refusal message
 CATEGORY = {"forward": "forward-looking", "causal": "causal", "advice": "advice",
@@ -40,10 +44,10 @@ def outcome(a):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--split", choices=["dev", "holdout"])
+    ap.add_argument("--split", choices=["dev", "holdout", "independent"])
     args = ap.parse_args()
 
-    qs = [json.loads(l) for l in open(QUESTIONS) if l.strip()]
+    qs = [json.loads(l) for path in QUESTIONS for l in open(path) if l.strip()]
     if args.split:
         qs = [q for q in qs if q["split"] == args.split]
 
@@ -64,6 +68,10 @@ def main():
         print(f"{split:<8} {ok}/{n}  ({ok / n:.0%})")
     print(f"missed refusals (answered when it should not): {len(missed)}")
     print(f"over-refusals / wrong tool:                    {len(over)}")
+    if not args.split:          # full run → the summary the web page and README quote
+        with open(os.path.join(ROOT, "evals", "summary.json"), "w") as f:
+            json.dump({s: {"correct": ok, "total": n} for s, (ok, n) in by_split.items()}
+                      | {"missed_refusals": len(missed), "over_refusals": len(over)}, f, indent=2)
     return 0 if not missed else 1
 
 

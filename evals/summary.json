@@ -11,9 +11,19 @@
     "correct": 40,
     "total": 40
   },
+  "real_user": {
+    "correct": 1,
+    "total": 1
+  },
+  "everyday": {
+    "correct": 30,
+    "total": 30
+  },
   "missed_refusals": 0,
   "over_refusals": 0,
   "first_contact": {
-    "independent": "34/40 (85%) on first run, 2026-09-27, before any fix"
+    "independent": "34/40 (85%) on first run, 2026-09-27, before any fix",
+    "real_user": "0/1 \u2014 the first live question got a generic two-community table, 2026-09-27",
+    "everyday": "18/30 (60%) before routing fixes, 2026-09-27 \u2014 0 wrong refusals, 12 wrong views"
   }
 }

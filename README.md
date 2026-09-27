@@ -13,10 +13,10 @@ Built by Pavan Raheja while leading investment and strategy at Dash Capital (Dub
 | | |
 |---|---|
 | **Data** | 3,974 real residential sales across Emaar South and Dubai Creek Harbour, pulled from the land department's open-data API by a script (`pipeline/fetch_dld.py`). Every exclusion is listed in `pipeline/extract_report.json` |
-| **Answers** | Four pandas tools: compare communities, monthly price trend, segment breakdown, data coverage |
+| **Answers** | Six pandas tools: one-community snapshot, compare communities, monthly price and volume trend, breakdown (bedrooms, property type, off-plan vs ready, project), notable deals (latest or largest), data coverage |
 | **Refuses** | Forward-looking, causal, advice, out-of-scope, supply/absorption, and areas outside the extract |
-| **Measured** | Labelled question sets. **First-contact score on 40 questions written independently: 34/40 (85%)**. After fixes: dev 33/33 · holdout 23/23 · independent 40/40 (tuned) · 0 missed refusals |
-| **Tests** | 12 unit tests on refusal and evidence behaviour |
+| **Measured** | 127 labelled questions in five sets. **First contact on 40 independently written questions: 34/40 (85%). On 30 everyday questions: 18/30 (60%)**, with no wrong refusals but 12 wrong views. After fixes all sets pass (tuned) · 0 missed refusals |
+| **Tests** | 14 unit tests on refusal and evidence behaviour |
 
 ## Run it
 
@@ -26,7 +26,7 @@ python api/index.py                 # web UI → http://localhost:8090
 python ask.py "compare the two communities"
 python ask.py --demo                # the full question set, including the ones it refuses
 python evals/run_eval.py            # score every labelled question
-python ask/test_ask.py              # 12 unit tests
+python ask/test_ask.py              # 14 unit tests
 python pipeline/fetch_dld.py        # re-pull the real data (1 Jan this year → today)
 ```
 
@@ -85,6 +85,7 @@ Every threshold is a named constant in `ask/evidence.py`, so the rules are argua
 - `questions_independent_v1.jsonl`: 40 questions written by a separate model that saw only a description of the tool, not the code. They were committed before the first run (see git history).
 - **Baseline before this round:** dev 58%, holdout 52%, with 21 questions answered that should have been refused.
 - **Independent first contact: 34/40 (85%).** Its misses included a real bug, where `rent` matched inside "cu*rrent*". It is fixed and has a regression test. The set now scores 40/40, but that number is tuned; the next clean number needs a new independent set.
+- `questions_everyday_v1.jsonl`: the **first question typed on the live site** ("what is going on with Dubai creek harbor", which got a generic table) plus 30 everyday phrasings. **Baseline: 18/30.** Nothing was wrongly refused, but 12 went to the wrong view, which feels like a refusal to the person asking. Now 30/30 after adding a community snapshot, notable deals, project and off-plan splits, and spelling tolerance.
 - The error that matters is the **missed refusal**, a confident number that should not exist. It is reported separately from over-refusal.
 
 ## `pipeline/` — where the data comes from

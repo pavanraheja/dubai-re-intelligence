@@ -111,21 +111,23 @@ def price_trend(area=None, months=24):
     cutoff = d["date"].max() - pd.DateOffset(months=months)
     d = d[d["date"] >= cutoff]
     g = d.groupby("ym").agg(txns=("price_aed", "size"), median_ppsf=("ppsf", "median"))
-    g = g[g["txns"] >= 5]                      # months with <5 deals are noise, dropped
+    volume = {str(k): int(v) for k, v in g["txns"].items()}   # volume keeps every month
+    g = g[g["txns"] >= 5]                      # months with <5 deals are noise, dropped from price
     series = {str(k): round(v, 1) for k, v in g["median_ppsf"].items()}
 
     e = ev.grade([len(d)], _window(d), source)
     dropped = len(set(d["ym"])) - len(g)
     if dropped:
         e.caveats.append(f"{dropped} month(s) dropped — fewer than 5 transactions, too thin to plot")
-    return {"area": area or "all", "monthly_median_ppsf": series,
+    return {"area": area or "all", "monthly_median_ppsf": series, "monthly_sales": volume,
             "first": list(series.values())[0] if series else None,
             "last": list(series.values())[-1] if series else None}, e
 
 
 # ── TOOL 3 ────────────────────────────────────────────────────────────────
-def segment_breakdown(area=None, by="property_type", months=12):
-    """Where the money actually goes: split volume and price by segment."""
+def segment_breakdown(area=None, by="property_type", months=12, sort="txns"):
+    """Where the money actually goes: split volume and price by segment.
+    sort="ppsf" ranks by median price, but only segments with enough sales to rank."""
     df, source = load()
     d = df if area is None else df[df["area"] == area.upper()]
     d = d[d["date"] >= d["date"].max() - pd.DateOffset(months=months)]
@@ -138,8 +140,17 @@ def segment_breakdown(area=None, by="property_type", months=12):
                           value_aed=("price_aed", "sum")).sort_values("txns", ascending=False)
     e = ev.grade([len(d)], _window(d), source)
     thin = g[g["txns"] < ev.MIN_ROWS_ANSWER].index.tolist()
-    if thin:
-        e.caveats.append(f"segments with thin samples, medians unreliable: {', '.join(map(str, thin))}")
+    if sort == "ppsf":
+        # ranking by price on a handful of deals would crown whichever project had one big sale
+        g = g[g["txns"] >= ev.MIN_ROWS_ANSWER].sort_values("median_ppsf", ascending=False)
+        if thin:
+            e.caveats.append(f"ranked by median price/sqft; {len(thin)} segment(s) with fewer than "
+                             f"{ev.MIN_ROWS_ANSWER} sales left out of the ranking")
+    elif thin:
+        shown = ", ".join(map(str, thin[:5])) + (f" and {len(thin) - 5} more" if len(thin) > 5 else "")
+        e.caveats.append(f"segments with thin samples, medians unreliable: {shown}")
+    if by == "project_en":
+        g = g.head(10)
     return {"area": area or "all", "by": by,
             "segments": {str(k): {"txns": int(v.txns),
                                   "median_ppsf": round(v.median_ppsf, 1) if pd.notna(v.median_ppsf) else None,
@@ -187,7 +198,30 @@ def community_snapshot(area="DUBAI CREEK HARBOUR"):
             "busiest_month": str(monthly["txns"].idxmax()) if len(monthly) else None}, e
 
 
+# ── TOOL 6 ────────────────────────────────────────────────────────────────
+def notable_transactions(area=None, kind="recent", n=8):
+    """Individual registered sales: the most recent, or the largest by price."""
+    df, source = load()
+    d = df if area is None else df[df["area"] == area.upper()]
+    d = d.sort_values("price_aed" if kind == "largest" else "date", ascending=False).head(n)
+    cols = [c for c in ("date", "area", "project_en", "property_type", "rooms", "reg_type",
+                        "sqft", "price_aed", "ppsf") if c in d.columns]
+    rows = []
+    for _, r in d[cols].iterrows():
+        rows.append({"date": str(r["date"].date()), "area": r["area"],
+                     "project": r.get("project_en", ""), "type": r.get("property_type", ""),
+                     "rooms": r.get("rooms", ""), "status": r.get("reg_type", ""),
+                     "sqft": int(r["sqft"]) if pd.notna(r["sqft"]) else None,
+                     "price_aed": int(r["price_aed"]), "ppsf": round(r["ppsf"], 0)})
+    scope = df if area is None else df[df["area"] == area.upper()]
+    e = ev.grade([len(scope)], _window(scope), source)
+    e.caveats.append("individual sales, shown as registered — single deals are examples, "
+                     "not the market; use the medians for that")
+    return {"area": area or "all", "kind": kind, "transactions": rows}, e
+
+
 TOOLS = {
+    "notable_transactions": notable_transactions,
     "community_snapshot": community_snapshot,
     "compare_communities": compare_communities,
     "price_trend": price_trend,

@@ -35,6 +35,7 @@ So the product is narrow on purpose: two communities, every number carrying its 
 - **Secondary metric: over-refusals / wrong tool.** Annoying, not dangerous.
 - Three labelled question sets (`evals/`): **dev** (33, tuned on), **holdout** (23, written at the same time, never tuned on), and **independent** (40, written by a separate model that saw only the tool's description, never the code, committed before it was first run).
 - **The baseline was poor, and that is recorded:** before this round, the tool scored 58% on dev and 52% on holdout, with 21 questions answered that should have been refused.
+- **First real user session (27 Sep):** the only question typed by hand, "what is going on with Dubai creek harbor", got a generic two-community table, and the five refused-on-purpose examples read as failures. Lesson: **a wrong view feels like a refusal**, so over-routing is measured too. A 30-question everyday set scored 18/30 before fixes and 30/30 after (tuned). Every refusal now offers one-tap questions the data can answer.
 - **The independent set's first-contact score was 34/40 (85%).** It found a real bug: `rent` matched inside "cu*rrent*". It now scores 40/40, but that is a tuned number. The next clean number needs a new independent set.
 
 ## What was deliberately cut
@@ -62,6 +63,7 @@ So the product is narrow on purpose: two communities, every number carrying its 
 | 27 Sep 2026 | Refuse year-on-year rather than estimate it | The API serves the current year only |
 | 27 Sep 2026 | Add advice and unknown-area refusals, and an independent eval set | Baseline eval: 21 questions answered that should have been refused |
 | 27 Sep 2026 | Dashboard: "BUY / SELL" signals renamed to momentum labels; rental yields labelled MODELLED | The same product cannot refuse advice in one screen and give it in the next. Rents are hard-coded 2025 estimates, not registry data |
+| 27 Sep 2026 | Add a one-community snapshot, notable deals, project and off-plan splits; refusals suggest answerable questions | First live session: the hand-typed question got a generic table, and refusals read as failures. Everyday set 18/30 → 30/30 |
 | 27 Sep 2026 | Dashboard: stop blending synthetic history into real charts | A concat bug was silently dropping every real row, so the dashboard reported real data while plotting synthetic data |
 
 ## What's next, in priority order

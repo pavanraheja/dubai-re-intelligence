@@ -41,16 +41,32 @@ def plan_rules(question):
                             "based on", "how fresh", "how recent", "come from", "source",
                             "only cover", "included in", "dataset")):
         return [("data_coverage", {})]
+    project = any(w in q for w in ("project", "building", "tower", "development"))
+    if not project and any(w in q for w in ("latest", "recent", "biggest", "largest", "highest",
+                                            "record", "most expensive deal", "most expensive sale",
+                                            "top deal", "top sale")):
+        kind = "recent" if any(w in q for w in ("latest", "recent")) else "largest"
+        return [("notable_transactions", {"area": area, "kind": kind})]
     rooms = re.search(r"\b(\d\s?-?\s?(bed|br|b/r)\w*|studios?|bedrooms?)\b", q)
-    if rooms or any(w in q for w in ("breakdown", "break down", "segment", "split", "villa",
-                                     "apartment", "townhouse", "property type",
-                                     "where does the money", "trades most")):
-        by = "rooms" if rooms else "property_type"
-        return [("segment_breakdown", {"area": area, "by": by, "months": months})]
+    ready = re.search(r"\bready\b", q)
+    if project or ready or rooms or any(w in q for w in (
+            "breakdown", "break down", "segment", "split", "villa", "apartment", "townhouse",
+            "property type", "where does the money", "trades most", "sells most")):
+        sort = "ppsf" if any(w in q for w in ("expensive", "cheap", "priciest", "premium", "price")) and project else "txns"
+        by = ("project_en" if project else "reg_type" if ready
+              else "rooms" if rooms else "property_type")
+        both = area is None and any(w in q for w in ("between", "both", "two", " vs ", "compare",
+                                                     "versus"))
+        if both:
+            return [("segment_breakdown", {"area": a, "by": by, "months": months, "sort": sort})
+                    for a in ("DUBAI CREEK HARBOUR", "EMAAR SOUTH")]
+        return [("segment_breakdown", {"area": area, "by": by, "months": months, "sort": sort})]
     if any(w in q for w in ("trend", "over time", "direction", "moving", "growth", "rising",
                             "falling", "momentum", "monthly", "month by month",
                             "more expensive over", "got more expensive", "over the past",
-                            "trajectory", "track", "dips", "moved")):
+                            "trajectory", "track", "dips", "moved", "going up", "going down",
+                            "cooling", "heating", "since", "change", "by month", "per month",
+                            "demand")):
         return [("price_trend", {"area": area, "months": max(months, 24)})]
     if any(w in q for w in ("compare", "versus", " vs ", "better", "faster", "outperform",
                             "which community", "absorb", "two communities", "which of the two",
@@ -74,7 +90,8 @@ def plan_llm(question):
         client = anthropic.Anthropic(api_key=key)
         spec = ("Choose tools to answer a question about Dubai property transactions. "
                 "Tools: compare_communities(months), price_trend(area, months), "
-                "segment_breakdown(area, by, months), data_coverage(). "
+                "segment_breakdown(area, by=property_type|rooms|reg_type|project_en, months, sort=txns|ppsf), "
+                "community_snapshot(area), notable_transactions(area, kind=recent|largest), data_coverage(). "
                 "Areas: 'EMAAR SOUTH' or 'DUBAI CREEK HARBOUR'. "
                 "Reply ONLY with lines of the form tool|key=value,key=value")
         r = client.messages.create(
@@ -183,6 +200,10 @@ def _fmt(name, d):
         for seg, v in list(d.get("segments", {}).items())[:6]:
             lines.append(f"  {seg:<22} {v['txns']:>5} txns · AED {v['median_ppsf']}/sqft · "
                          f"AED {v['value_aed_m']}m total")
+    elif name == "notable_transactions":
+        for t in d["transactions"]:
+            lines.append(f"  {t['date']}  {str(t['project'])[:26]:<26} {t['rooms']:<7} {t['status']:<8} "
+                         f"{t['sqft'] or 0:>6,} sqft  AED {t['price_aed']:>12,}  ({t['ppsf']:,.0f}/sqft)")
     elif name == "community_snapshot":
         lines.append(f"  {d['area'].title()}: {d['transactions']:,} sales · median AED {d['median_ppsf']}/sqft · "
                      f"median price AED {d['median_price_aed']:,} · off-plan {d['offplan_share_pct']}%")

@@ -59,11 +59,15 @@ a{color:var(--accent)}
 
   <div class="chips">
     <div class="lab">Answerable</div>
+    <span class="chip">What's going on in Dubai Creek Harbour?</span>
     <span class="chip">Compare the two communities</span>
+    <span class="chip">Most expensive projects in Creek Harbour</span>
+    <span class="chip">Off-plan vs ready prices in Emaar South</span>
+    <span class="chip">Sales volume by month in Emaar South</span>
+    <span class="chip">Biggest deals in Creek Harbour</span>
     <span class="chip">Split Creek Harbour sales by bedrooms</span>
-    <span class="chip">Monthly price trend in Emaar South</span>
     <span class="chip">What can this data answer?</span>
-    <div class="lab">Refused on purpose</div>
+    <div class="lab">Refused on purpose: the data cannot answer these, and the tool says so</div>
     <span class="chip no">Is Emaar South absorbing supply faster than Creek Harbour?</span>
     <span class="chip no">Will Creek Harbour prices keep rising?</span>
     <span class="chip no">Should I buy in Emaar South?</span>
@@ -76,7 +80,7 @@ a{color:var(--accent)}
   <section class="how">
     <h2>How it works</h2>
     <ul>
-      <li><b>The planner picks a tool; it never produces a number.</b> Four pandas functions compute everything. A model can be swapped in as planner and cannot override a refusal.</li>
+      <li><b>The planner picks a tool; it never produces a number.</b> Six pandas functions compute everything. A model can be swapped in as planner and cannot override a refusal.</li>
       <li><b>Refusals are rules, written down.</b> Forward-looking, causal, advice, out-of-scope, supply and unknown-area questions are refused before anything is computed. Thin samples (&lt;30 rows) get no answer at all.</li>
       <li><b>Measured, not asserted.</b> <span id="evalline">A labelled question set scores every change.</span></li>
       <li><b>Known limits:</b> current calendar year only (the public API serves no earlier data), so year-on-year is not computed; the registry records townhouses as villas; Emaar South is defined by project name, and every excluded project is listed in the extract report.</li>
@@ -130,10 +134,27 @@ function body(tool, d) {
     const s = d.monthly_median_ppsf || {}, ks = Object.keys(s);
     if (!ks.length) return `<p class="muted">No month has enough deals to plot.</p>`;
     const ch = d.first ? ((d.last / d.first - 1) * 100).toFixed(1) : null;
-    return `<p><b>${title(d.area)}</b>: AED ${n(d.first)}/sqft (${ks[0]}) → AED ${n(d.last)}/sqft (${ks[ks.length - 1]})${ch ? ` · <b>${ch > 0 ? "+" : ""}${ch}%</b> over the window` : ""}</p>` + spark(s);
+    const vol = d.monthly_sales || {};
+    return `<p><b>${title(d.area)}</b>: AED ${n(d.first)}/sqft (${ks[0]}) → AED ${n(d.last)}/sqft (${ks[ks.length - 1]})${ch ? ` · <b>${ch > 0 ? "+" : ""}${ch}%</b> over the window` : ""}</p>` + spark(s) +
+      table(["Month", "Sales", "Median AED/sqft"], Object.keys(vol).map(m => [esc(m), n(vol[m]), s[m] == null ? "too few sales" : n(s[m])]));
   }
+  if (tool === "community_snapshot") {
+    const t = d.trend;
+    return table(["", ""], [
+      ["Sales, " + esc(d.area === "EMAAR SOUTH" ? "Emaar South" : "Dubai Creek Harbour"), n(d.transactions)],
+      ["Median price / sqft", "AED " + n(d.median_ppsf)],
+      ["Median price", "AED " + n(d.median_price_aed)],
+      ["Off-plan share", n(d.offplan_share_pct) + "%"],
+      ["Price / sqft trend", t ? `AED ${n(t.from_ppsf)} (${esc(t.from_month)}) → AED ${n(t.to_ppsf)} (${esc(t.to_month)}) · <b>${t.change_pct > 0 ? "+" : ""}${t.change_pct}%</b>` : "not enough months"],
+      ["Busiest month", esc(d.busiest_month || "—")],
+      ["Bedroom mix", Object.entries(d.top_bedrooms || {}).map(([k, v]) => `${esc(k)} ${v}%`).join(" · ")]]);
+  }
+  if (tool === "notable_transactions")
+    return `<p class="muted">${title(d.area)} · ${d.kind === "largest" ? "largest sales by price" : "most recent sales"}</p>` +
+      table(["Date", "Project", "Beds", "Status", "Sqft", "Price AED", "AED/sqft"],
+        d.transactions.map(t => [esc(t.date), esc(t.project), esc(t.rooms), esc(t.status), n(t.sqft), n(t.price_aed), n(t.ppsf)]));
   if (tool === "segment_breakdown")
-    return `<p class="muted">${title(d.area)} · by ${esc(d.by === "rooms" ? "bedrooms" : "property type")}</p>` +
+    return `<p class="muted">${title(d.area)} · by ${esc({rooms: "bedrooms", reg_type: "off-plan vs ready", project_en: "project (top 10)"}[d.by] || "property type")}</p>` +
       table(["Segment", "Sales", "Median AED/sqft", "Value AED m"],
         Object.entries(d.segments || {}).map(([s, v]) => [esc(s), n(v.txns), n(v.median_ppsf), n(v.value_aed_m)]));
   if (tool === "data_coverage")
@@ -144,8 +165,13 @@ function body(tool, d) {
 
 function render(a) {
   let h = `<div class="card"><div class="q">${esc(a.question)}</div>`;
-  for (const r of a.scope_refusals) h += `<div class="refuse"><b>Refused</b>${esc(r)}</div>`;
-  if (a.scope_refusals.length) h += `<div class="instead">What the data can show instead — this does <b>not</b> answer the question asked:</div>`;
+  for (const r of a.scope_refusals) h += `<div class="refuse"><b>Can't answer this from sales data</b>${esc(r)}</div>`;
+  if (a.scope_refusals.length) {
+    const tries = suggest(a.scope_refusals.join(" "), a.question);
+    h += `<div class="instead">Questions this data <b>can</b> answer instead:</div><div>` +
+      tries.map(t => `<span class="chip try">${esc(t)}</span>`).join("") + `</div>`;
+    h += `<div class="instead">Closest numbers available (they do <b>not</b> answer the question asked):</div>`;
+  }
   for (const r of a.results) {
     const e = r.evidence;
     h += `<div class="tool">${esc(r.tool)}</div>`;
@@ -157,6 +183,18 @@ function render(a) {
   }
   h += `<p class="muted" style="font-size:12px;margin-top:12px">planner: ${esc(a.planner)} · numbers computed in pandas, not generated by a model</p></div>`;
   $("#out").innerHTML = h;
+  document.querySelectorAll("#out .chip.try").forEach(c => c.addEventListener("click", () => go(c.textContent)));
+}
+
+// A refusal should always leave the user one tap from a question that works.
+function suggest(reason, q) {
+  const place = /emaar|\bes\b/i.test(q) ? "Emaar South" : /creek|dch/i.test(q) ? "Dubai Creek Harbour" : null;
+  const p = place || "Dubai Creek Harbour";
+  if (/not in this extract/.test(reason)) return ["Compare the two communities", "What can this data answer?"];
+  if (/forward-looking|causal/.test(reason)) return [`Monthly price trend in ${p}`, `Off-plan vs ready prices in ${p}`];
+  if (/advice/.test(reason)) return [place ? `What's going on in ${p}?` : "Compare the two communities", `Most expensive projects in ${p}`];
+  if (/supply/.test(reason)) return [`Sales volume by month in ${p}`, "Compare the two communities"];
+  return ["What can this data answer?", `What's going on in ${p}?`];
 }
 
 async function go(q) {

@@ -44,6 +44,20 @@ def test_unknown_area_is_refused_not_substituted():
     assert any("not in this extract" in r for r in a["scope_refusals"])
 
 
+def test_first_real_user_question_gets_that_community():
+    # the first question typed on the live site; it used to get a generic two-community table
+    a = ask("what is going on with Dubai creek harbor")
+    assert a["scope_refusals"] == []
+    name, data, _ = a["results"][0]
+    assert name == "community_snapshot" and data["area"] == "DUBAI CREEK HARBOUR"
+
+
+def test_price_ranking_ignores_thin_projects():
+    a = ask("Most expensive project in Creek Harbour")
+    _, data, _ = a["results"][0]
+    assert all(v["txns"] >= ev.MIN_ROWS_ANSWER for v in data["segments"].values())
+
+
 def test_normal_question_is_not_refused():
     a = ask("Compare the two communities over 12 months")
     assert a["scope_refusals"] == []

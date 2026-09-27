@@ -25,11 +25,13 @@ sys.path.insert(0, ROOT)
 from ask.agent import ask  # noqa: E402
 
 QUESTIONS = [os.path.join(ROOT, "evals", f) for f in
-             ("questions_v1.jsonl", "questions_independent_v1.jsonl")]
+             ("questions_v1.jsonl", "questions_independent_v1.jsonl", "questions_everyday_v1.jsonl")]
 
 # Recorded once, never recomputed: the independent set's score the first time it ran,
 # before any rule was changed in response to it. Every later score on it is tuned.
-FIRST_CONTACT = {"independent": "34/40 (85%) on first run, 2026-09-27, before any fix"}
+FIRST_CONTACT = {"independent": "34/40 (85%) on first run, 2026-09-27, before any fix",
+                 "real_user": "0/1 — the first live question got a generic two-community table, 2026-09-27",
+                 "everyday": "18/30 (60%) before routing fixes, 2026-09-27 — 0 wrong refusals, 12 wrong views"}
 
 # refusal category → text that identifies it in the refusal message
 CATEGORY = {"forward": "forward-looking", "causal": "causal", "advice": "advice",
@@ -48,7 +50,7 @@ def outcome(a):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--split", choices=["dev", "holdout", "independent"])
+    ap.add_argument("--split", choices=["dev", "holdout", "independent", "everyday", "real_user"])
     args = ap.parse_args()
 
     qs = [json.loads(l) for path in QUESTIONS for l in open(path) if l.strip()]

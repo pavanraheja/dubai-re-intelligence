@@ -57,6 +57,9 @@ def plan_rules(question):
                             "side by side", "cheaper", "more expensive", "transactions",
                             "deals", "stack up")):
         return [("compare_communities", {"months": months})]
+    # one named community and no more specific ask ("what's going on with X") -> its snapshot
+    if area:
+        return [("community_snapshot", {"area": area})]
     # default: give the comparison plus coverage, rather than guessing
     return [("compare_communities", {"months": months}), ("data_coverage", {})]
 
@@ -97,8 +100,20 @@ def plan_llm(question):
         return None          # any failure → rules. The tool still works offline.
 
 
+# Spellings people actually type. Applied before refusals and planning alike.
+SPELLING = ((r"\bharbor\b", "harbour"), (r"\bemmar\b", "emaar"), (r"\bemar\b", "emaar"))
+
+
+def normalise(question):
+    q = question.strip()
+    for pat, rep in SPELLING:
+        q = re.sub(pat, rep, q, flags=re.I)
+    return q
+
+
 def ask(question, planner="auto"):
     """Answer a question, or refuse it. Always returns evidence."""
+    question = normalise(question)
     refusals = ev.scope_refusals(question)
 
     plan = None
@@ -168,6 +183,15 @@ def _fmt(name, d):
         for seg, v in list(d.get("segments", {}).items())[:6]:
             lines.append(f"  {seg:<22} {v['txns']:>5} txns · AED {v['median_ppsf']}/sqft · "
                          f"AED {v['value_aed_m']}m total")
+    elif name == "community_snapshot":
+        lines.append(f"  {d['area'].title()}: {d['transactions']:,} sales · median AED {d['median_ppsf']}/sqft · "
+                     f"median price AED {d['median_price_aed']:,} · off-plan {d['offplan_share_pct']}%")
+        t = d.get("trend")
+        if t:
+            lines.append(f"  price/sqft {t['from_month']} → {t['to_month']}: AED {t['from_ppsf']} → "
+                         f"{t['to_ppsf']} ({t['change_pct']:+.1f}%) · busiest month {d['busiest_month']}")
+        if d["top_bedrooms"]:
+            lines.append("  mix: " + " · ".join(f"{k} {v}%" for k, v in d["top_bedrooms"].items()))
     elif name == "data_coverage":
         lines.append(f"  {d['rows']:,} transactions · {', '.join(a.title() for a in d['areas'])} · "
                      f"{d['from']} → {d['to']}")

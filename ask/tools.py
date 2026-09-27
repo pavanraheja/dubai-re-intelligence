@@ -161,7 +161,34 @@ def data_coverage():
                               "population", "mortgage rates", "forward supply"]}, e
 
 
+# ── TOOL 5 ────────────────────────────────────────────────────────────────
+def community_snapshot(area="DUBAI CREEK HARBOUR"):
+    """One community at a glance — the answer to "what's going on with X?"."""
+    df, source = load()
+    d = df[df["area"] == area.upper()]
+    monthly = d.groupby("ym").agg(txns=("price_aed", "size"), med=("ppsf", "median"))
+    monthly = monthly[monthly["txns"] >= 5]
+    first, last = (monthly.iloc[0], monthly.iloc[-1]) if len(monthly) else (None, None)
+    rooms = d["rooms"].value_counts(normalize=True).head(3) if "rooms" in d else pd.Series(dtype=float)
+
+    e = ev.grade([len(d)], _window(d) if len(d) else None, source)
+    if len(monthly) and len(monthly) < len(set(d["ym"])):
+        e.caveats.append("months with fewer than 5 sales left out of the trend")
+    return {"area": area,
+            "transactions": len(d),
+            "median_ppsf": round(d["ppsf"].median(), 1) if len(d) else None,
+            "median_price_aed": int(d["price_aed"].median()) if len(d) else None,
+            "offplan_share_pct": round(_offplan_share(d), 1),
+            "trend": {"from_month": str(monthly.index[0]), "to_month": str(monthly.index[-1]),
+                      "from_ppsf": round(first["med"], 1), "to_ppsf": round(last["med"], 1),
+                      "change_pct": round((last["med"] / first["med"] - 1) * 100, 1)}
+            if len(monthly) >= 2 else None,
+            "top_bedrooms": {str(k): round(v * 100, 1) for k, v in rooms.items()},
+            "busiest_month": str(monthly["txns"].idxmax()) if len(monthly) else None}, e
+
+
 TOOLS = {
+    "community_snapshot": community_snapshot,
     "compare_communities": compare_communities,
     "price_trend": price_trend,
     "segment_breakdown": segment_breakdown,

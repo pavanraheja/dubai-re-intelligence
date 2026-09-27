@@ -1,0 +1,31 @@
+{"id": "u01", "split": "real_user", "q": "what is going on with Dubai creek harbor", "expect": ["answer:community_snapshot"], "note": "typed by Pavan on the live site, 27 Sep 2026 — the first real-user question"}
+{"id": "e01", "split": "everyday", "q": "How is Emaar South doing?", "expect": ["answer:community_snapshot"]}
+{"id": "e02", "split": "everyday", "q": "Tell me about Creek Harbour", "expect": ["answer:community_snapshot"]}
+{"id": "e03", "split": "everyday", "q": "average price of an apartment in emaar south", "expect": ["answer:segment_breakdown"]}
+{"id": "e04", "split": "everyday", "q": "Which is cheaper?", "expect": ["answer:compare_communities"]}
+{"id": "e05", "split": "everyday", "q": "How many villas sold in Emaar South", "expect": ["answer:segment_breakdown"]}
+{"id": "e06", "split": "everyday", "q": "What is the price per square foot in DCH", "expect": ["answer:community_snapshot"]}
+{"id": "e07", "split": "everyday", "q": "Is the market going up in Creek Harbour?", "expect": ["answer:price_trend"]}
+{"id": "e08", "split": "everyday", "q": "prices in creek harbour last month", "expect": ["answer:price_trend", "answer:community_snapshot"]}
+{"id": "e09", "split": "everyday", "q": "Most expensive project in Creek Harbour", "expect": ["answer:segment_breakdown"]}
+{"id": "e10", "split": "everyday", "q": "Which project has the most sales in Emaar South", "expect": ["answer:segment_breakdown"]}
+{"id": "e11", "split": "everyday", "q": "Off-plan vs ready prices in Creek Harbour", "expect": ["answer:segment_breakdown"]}
+{"id": "e12", "split": "everyday", "q": "How did prices change since January in Emaar South", "expect": ["answer:price_trend"]}
+{"id": "e13", "split": "everyday", "q": "Sales volume by month in Creek Harbour", "expect": ["answer:price_trend"]}
+{"id": "e14", "split": "everyday", "q": "What happened in August in DCH", "expect": ["answer:price_trend", "answer:community_snapshot"]}
+{"id": "e15", "split": "everyday", "q": "latest transactions in emaar south", "expect": ["answer:notable_transactions"]}
+{"id": "e16", "split": "everyday", "q": "How much does a 3 bedroom cost in creek harbour", "expect": ["answer:segment_breakdown"]}
+{"id": "e17", "split": "everyday", "q": "emaar south overview", "expect": ["answer:community_snapshot"]}
+{"id": "e18", "split": "everyday", "q": "creek harbour summary", "expect": ["answer:community_snapshot"]}
+{"id": "e19", "split": "everyday", "q": "is emaar south cheaper than creek harbour", "expect": ["answer:compare_communities"]}
+{"id": "e20", "split": "everyday", "q": "how many transactions in 2026", "expect": ["answer:compare_communities", "answer:data_coverage"]}
+{"id": "e21", "split": "everyday", "q": "what's the median price", "expect": ["answer:compare_communities"]}
+{"id": "e22", "split": "everyday", "q": "top buildings in creek harbour", "expect": ["answer:segment_breakdown"]}
+{"id": "e23", "split": "everyday", "q": "ready property prices emaar south", "expect": ["answer:segment_breakdown"]}
+{"id": "e24", "split": "everyday", "q": "how are villas doing in emaar south", "expect": ["answer:segment_breakdown"]}
+{"id": "e25", "split": "everyday", "q": "give me a quick update on dubai creek harbor", "expect": ["answer:community_snapshot"]}
+{"id": "e26", "split": "everyday", "q": "What sells most in Emaar South?", "expect": ["answer:segment_breakdown", "answer:community_snapshot"]}
+{"id": "e27", "split": "everyday", "q": "How has demand changed in creek harbour", "expect": ["answer:price_trend"]}
+{"id": "e28", "split": "everyday", "q": "Is the market cooling in Creek Harbour?", "expect": ["answer:price_trend"]}
+{"id": "e29", "split": "everyday", "q": "Compare 2 bed prices between the two", "expect": ["answer:segment_breakdown"]}
+{"id": "e30", "split": "everyday", "q": "biggest deal in creek harbour", "expect": ["answer:notable_transactions"]}

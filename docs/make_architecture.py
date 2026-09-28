@@ -129,7 +129,7 @@ def diagram(theme):
 
     # ── lane 4: roadmap (dashed = not built) ──
     nxt = [("nightly DLD pull", "fresh data, auto"), ("historic archive", "makes YoY answerable"),
-           ("supply source", "completions, unsold"), ("LLM planner", "benchmarked on evals"),
+           ("supply source", "completions, unsold"), ("LLM planner", "benchmark, ~$0.11/100 Qs"),
            ("loop on a schedule", "weekly roadmap report")]
     for i, (t, s) in enumerate(nxt):
         box(52 + i * 202, 533, t, s, w=184, h=48, dashed=True)

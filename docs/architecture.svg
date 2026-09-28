@@ -108,7 +108,7 @@
 <text x="548.0" y="570" text-anchor="middle" font-size="11" fill="#5a6672">completions, unsold</text>
 <rect x="658" y="533" width="184" height="48" rx="8" fill="#ffffff" stroke="#16202a" stroke-width="1.2" stroke-dasharray="5 4"/>
 <text x="750.0" y="553" text-anchor="middle" font-size="13" font-weight="600" fill="#16202a">LLM planner</text>
-<text x="750.0" y="570" text-anchor="middle" font-size="11" fill="#5a6672">benchmarked on evals</text>
+<text x="750.0" y="570" text-anchor="middle" font-size="11" fill="#5a6672">benchmark, ~$0.11/100 Qs</text>
 <rect x="860" y="533" width="184" height="48" rx="8" fill="#ffffff" stroke="#16202a" stroke-width="1.2" stroke-dasharray="5 4"/>
 <text x="952.0" y="553" text-anchor="middle" font-size="13" font-weight="600" fill="#16202a">loop on a schedule</text>
 <text x="952.0" y="570" text-anchor="middle" font-size="11" fill="#5a6672">weekly roadmap report</text>

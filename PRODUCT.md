@@ -78,11 +78,40 @@ Privacy: no IP or identifying data is logged, and visitors' questions are never 
 | 28 Sep 2026 | Never pool the two communities; trends in "both" are shown side by side | Second live session: "price trend in both" returned one pooled line (−1.6%, HIGH confidence) while the two communities actually moved in opposite directions (−2.1% and +2.2%). Real-user set 5/7 → 7/7 |
 | 27 Sep 2026 | Dashboard: stop blending synthetic history into real charts | A concat bug was silently dropping every real row, so the dashboard reported real data while plotting synthetic data |
 
-## What's next, in priority order
-1. **Benchmark an LLM planner against the same eval sets**, as a constrained classifier with a versioned prompt and locked settings. Publish accuracy **and** cost per 100 questions next to the rules planner, and ship whichever wins on missed refusals.
-2. **Historic data** (the land department's bulk archive), so year-on-year moves from refused to answerable.
-3. **Supply data** (project completions), so the most-asked refused question becomes an answer.
-4. **Run the learning loop on a schedule** (built; see above) and review its report weekly. The most-refused category is the roadmap: it shows what decision-makers need that the data does not yet give them.
+## How the roadmap is prioritised
+Four criteria, scored 1 to 3: **trust impact** (does it remove a way to be confidently wrong?), **demand evidence** (logged refusals, rephrase chains, wrong views), **decision value** (does it change what the committee can decide?) and **cost** (build days + running cost + how obtainable the data is + upkeep, since each new source needs its own evidence rules and eval set).
+
+Five rules decide the order, and they matter more than the scores:
+1. **Trust first.** A trust-3 item goes ahead of features, whatever the demand.
+2. **Evidence enablers next.** Cheap work that produces the evidence other decisions need.
+3. **Then value and demand per unit of cost.**
+4. **Unknown data means a one-day spike, not a build.**
+5. **Refused-by-design stays refused.** Demand for forecasts, advice or causes improves the alternatives offered; it never becomes a feature.
+
+| Item | Trust | Demand | Value | Cost | Estimate | Decision |
+|---|---|---|---|---|---|---|
+| Numeric-accuracy tests: reconcile answers against an independent calculation. The eval sets check routing and refusals, not that a median is right | 3 | 1 | 2 | 1 | ~½ day, $0 | **Now** (rule 1) |
+| Robust trend: Q1 vs Q3 medians with a bootstrap interval, instead of January vs September | 3 | 1 | 2 | 1 | ~½ day, $0 | **Now** (rule 1) |
+| Learning loop on a schedule, so no logs are lost | 2 | – | 1 | 1 | ~1–2 hours, $0 | **Now** (rule 2) |
+| LLM planner benchmarked on all 134 questions, as a constrained classifier with a versioned prompt | 2 | 2 | 2 | 2 | ~1 day; about $0.11 per 100 questions on Claude Sonnet 5, $0.06 on Claude Haiku 4.5 (list prices, ~400 in / 30 out tokens, excluding thinking); needs an API key | **Next**, ships only if missed refusals stay 0 |
+| Nightly data pull and redeploy | 2 | 0 | 2 | 1 | ~½ day, $0 on free tiers | **Next** |
+| Historic data, so year-on-year becomes answerable | 1 | 1 | 3 | 3 | source and price unknown | **Spike** (rule 4) |
+| Supply data, so "absorbing supply?" becomes answerable | 1 | 1 | 3 | 3 | source unknown; new evidence rules | **Spike** (rule 4) |
+| More areas | 1 | 1 | 1 | 1 | ~1 day per area incl. eval questions | **Later**: the committee invests in two |
+| Rents and yields | 2 | 0 | 3 | 3 | second source, own contract | **Later** |
+| Forecasts, buy advice, causes | — | asked for | — | — | — | **Never** (rule 5) |
+
+Demand scores are small today because nearly all logged sessions are the owner's. The learning loop fills that column as real use arrives, and the ranking is re-run from its report.
+
+### Trade-offs between aspects
+| Aspect | Optimises | Measure | Trade-off rule |
+|---|---|---|---|
+| Trust | no confident wrong numbers | missed refusals, pooled or unsupported figures | never traded |
+| Usefulness | the right view for the question | wrong views, over-refusals, rephrase chains | improved only without moving trust |
+| Data | fresh, complete, explainable | days since pull, exclusions listed | stale is flagged, never hidden |
+| Cost | cheapest setup that holds quality | $ per 100 questions, hosting | decides only between options equal on trust |
+| Privacy | nothing identifying kept | fields logged, where raw questions live | a constraint, not a score |
+| Learning speed | failed question → test | hours from log to eval | cheap wins compound, so they come early |
 
 ## Carrying the pattern beyond real estate
 Nothing here is specific to property. Any agent that speaks to a decision-maker, such as an economic, fiscal or trade analyst answering a ministry, needs the same contract: **declare the source, declare the refusal categories, publish the eval score before it ships.** On a platform with many agents, the platform should enforce that contract so no agent can skip it. That is what makes a set of agents trustworthy, and it scales better than reviewing each agent by hand.

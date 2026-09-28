@@ -30,7 +30,9 @@ QUESTIONS = [os.path.join(ROOT, "evals", f) for f in
 # Recorded once, never recomputed: the independent set's score the first time it ran,
 # before any rule was changed in response to it. Every later score on it is tuned.
 FIRST_CONTACT = {"independent": "34/40 (85%) on first run, 2026-09-27, before any fix",
-                 "real_user": "0/1 — the first live question got a generic two-community table, 2026-09-27",
+                 "real_user": "0/1 — the first live question got a generic two-community table, 2026-09-27; "
+                              "second session 5/7 — 'price trend in both' pooled both communities into one "
+                              "HIGH-confidence line, 2026-09-28",
                  "everyday": "18/30 (60%) before routing fixes, 2026-09-27 — 0 wrong refusals, 12 wrong views"}
 
 # refusal category → text that identifies it in the refusal message

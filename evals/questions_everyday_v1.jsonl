@@ -29,3 +29,9 @@
 {"id": "e28", "split": "everyday", "q": "Is the market cooling in Creek Harbour?", "expect": ["answer:price_trend"]}
 {"id": "e29", "split": "everyday", "q": "Compare 2 bed prices between the two", "expect": ["answer:segment_breakdown"]}
 {"id": "e30", "split": "everyday", "q": "biggest deal in creek harbour", "expect": ["answer:notable_transactions"]}
+{"id": "u02", "split": "real_user", "q": "price trend in both", "expect": ["answer:compare_trends"], "note": "live site 28 Sep 17:29 — got one pooled 'All' line at HIGH confidence"}
+{"id": "u03", "split": "real_user", "q": "price trend in comparison", "expect": ["answer:compare_trends"], "note": "live site 28 Sep 17:29 — same pooled line"}
+{"id": "u04", "split": "real_user", "q": "price trend in emaar south", "expect": ["answer:price_trend"], "note": "live site 28 Sep 17:30"}
+{"id": "u05", "split": "real_user", "q": "price trend in creek harbor", "expect": ["answer:price_trend"], "note": "live site 28 Sep 17:30"}
+{"id": "u06", "split": "real_user", "q": "Off-plan vs ready prices in Emaar South", "expect": ["answer:segment_breakdown"], "note": "live site 28 Sep 17:29, example chip"}
+{"id": "u07", "split": "real_user", "q": "Should I buy in Emaar South?", "expect": ["refuse:advice"], "note": "live site 28 Sep 17:14, example chip"}

@@ -55,7 +55,7 @@ a{color:var(--accent)}
   <p class="sub">Emaar South and Dubai Creek Harbour. Every number carries its basis and a confidence grade. Questions the data cannot support are refused, with the reason.</p>
   <div class="basis" id="basis">Loading data basis…</div>
 
-  <form id="f"><input id="q" placeholder="e.g. Compare the two communities" autocomplete="off" aria-label="Question"><button>Ask</button></form>
+  <form id="f"><input id="q" placeholder="Ask anything about Emaar South or Dubai Creek Harbour" autocomplete="off" aria-label="Question"><button>Ask</button></form>
 
   <div class="chips">
     <div class="lab">Answerable</div>
@@ -81,7 +81,7 @@ a{color:var(--accent)}
   <section class="how">
     <h2>How it works</h2>
     <ul>
-      <li><b>The planner picks a tool; it never produces a number.</b> Six pandas functions compute everything. A model can be swapped in as planner and cannot override a refusal.</li>
+      <li><b>The planner picks a tool; it never produces a number.</b> Seven pandas functions compute everything. A model can be swapped in as planner and cannot override a refusal.</li>
       <li><b>Refusals are rules, written down.</b> Forward-looking, causal, advice, out-of-scope, supply and unknown-area questions are refused before anything is computed. Thin samples (&lt;30 rows) get no answer at all.</li>
       <li><b>Measured, not asserted.</b> <span id="evalline">A labelled question set scores every change.</span></li>
       <li><b>Known limits:</b> current calendar year only (the public API serves no earlier data), so year-on-year is not computed; the registry records townhouses as villas; Emaar South is defined by project name, and every excluded project is listed in the extract report.</li>
@@ -225,16 +225,22 @@ function suggest(reason, q) {
   return ["What can this data answer?", `What's going on in ${p}?`];
 }
 
-async function go(q) {
+// Only the latest question may render: a slow earlier answer must never replace a newer one.
+let seq = 0, typed = false;
+async function go(q, opening = false) {
   if (!q.trim()) return;
-  $("#q").value = q;
+  if (opening && typed) return;           // the visitor started typing; leave their input alone
+  const mine = ++seq;
+  if (!opening) $("#q").value = q;
   $("#out").innerHTML = `<p class="muted">Working…</p>`;
   const r = await fetch("/api/ask?q=" + encodeURIComponent(q));
-  render(await r.json());
+  const a = await r.json();
+  if (mine === seq) render(a);
 }
+$("#q").addEventListener("input", () => { typed = true; });
 $("#f").addEventListener("submit", e => { e.preventDefault(); go($("#q").value); });
 document.querySelectorAll(".chip").forEach(c => c.addEventListener("click", () => go(c.textContent)));
-go("Compare the two communities");
+go("Compare the two communities", true);   // opening example, shown below an empty box
 </script>
 </body>
 </html>

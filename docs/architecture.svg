@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1066 600" role="img" font-family="IBM Plex Sans, system-ui, -apple-system, Segoe UI, sans-serif" aria-label="Architecture: real land-registry sales are pulled into a CSV; each question passes a refusal gate before a planner that only picks a tool name, pandas computes every number, and a confidence grade is attached; every question is logged, reviewed, and changes to the eval set pass a human gate before the next deploy.">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#16202a"/></marker><marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1d5b8f"/></marker></defs>
+<rect x="0" y="0" width="1066" height="600" fill="#ffffff"/>
+<rect x="8" y="30" width="1050" height="140" rx="10" fill="#f5f6f2" stroke="#5a6672" stroke-width="0.8"/>
+<text transform="translate(30 100.0) rotate(-90)" text-anchor="middle" font-size="11" font-weight="600" letter-spacing="1" fill="#5a6672">DATA</text>
+<rect x="8" y="185" width="1050" height="165" rx="10" fill="#f5f6f2" stroke="#5a6672" stroke-width="0.8"/>
+<text transform="translate(30 267.5) rotate(-90)" text-anchor="middle" font-size="11" font-weight="600" letter-spacing="1" fill="#5a6672">ASK</text>
+<rect x="8" y="365" width="1050" height="125" rx="10" fill="#f5f6f2" stroke="#5a6672" stroke-width="0.8"/>
+<text transform="translate(30 427.5) rotate(-90)" text-anchor="middle" font-size="11" font-weight="600" letter-spacing="1" fill="#5a6672">LEARN</text>
+<rect x="8" y="505" width="1050" height="85" rx="10" fill="#f5f6f2" stroke="#5a6672" stroke-width="0.8" stroke-dasharray="5 4"/>
+<text transform="translate(30 547.5) rotate(-90)" text-anchor="middle" font-size="11" font-weight="600" letter-spacing="1" fill="#5a6672">NEXT</text>
+<rect x="52" y="85" width="150" height="52" rx="8" fill="#ffffff" stroke="#16202a" stroke-width="1.2"/>
+<text x="127.0" y="105" text-anchor="middle" font-size="13" font-weight="600" fill="#16202a">DLD open-data API</text>
+<text x="127.0" y="122" text-anchor="middle" font-size="11" fill="#5a6672">current year only</text>
+<rect x="220" y="85" width="150" height="52" rx="8" fill="#ffffff" stroke="#16202a" stroke-width="1.2"/>
+<text x="295.0" y="105" text-anchor="middle" font-size="13" font-weight="600" fill="#16202a">fetch_dld.py</text>
+<text x="295.0" y="122" text-anchor="middle" font-size="11" fill="#5a6672">sales · flats, villas</text>
+<rect x="388" y="85" width="150" height="52" rx="8" fill="#ffffff" stroke="#16202a" stroke-width="1.2"/>
+<text x="463.0" y="105" text-anchor="middle" font-size="13" font-weight="600" fill="#16202a">communities.py</text>
+<text x="463.0" y="122" text-anchor="middle" font-size="11" fill="#5a6672">defines Emaar South</text>
+<rect x="556" y="62" width="150" height="46" rx="8" fill="#ffffff" stroke="#16202a" stroke-width="1.2"/>
+<text x="631.0" y="82" text-anchor="middle" font-size="13" font-weight="600" fill="#16202a">transactions.csv</text>
+<text x="631.0" y="99" text-anchor="middle" font-size="11" fill="#5a6672">kept: 3,974 rows</text>
+<rect x="556" y="118" width="150" height="46" rx="8" fill="#ffffff" stroke="#16202a" stroke-width="1.2"/>
+<text x="631.0" y="138" text-anchor="middle" font-size="13" font-weight="600" fill="#16202a">extract_report.json</text>
+<text x="631.0" y="155" text-anchor="middle" font-size="11" fill="#5a6672">excluded, each listed</text>
+<polyline points="202,111 220,111" fill="none" stroke="#16202a" stroke-width="1.4" marker-end="url(#a)"/>
+<text x="211" y="79" text-anchor="middle" font-size="11" fill="#5a6672">pull, no key</text>
+<polyline points="370,111 388,111" fill="none" stroke="#16202a" stroke-width="1.4" marker-end="url(#a)"/>
+<text x="379" y="79" text-anchor="middle" font-size="11" fill="#5a6672">filter</text>
+<polyline points="538,104 556,85" fill="none" stroke="#16202a" stroke-width="1.4" marker-end="url(#a)"/>
+<polyline points="538,118 556,141" fill="none" stroke="#16202a" stroke-width="1.4" marker-end="url(#a)"/>
+<rect x="52" y="225" width="150" height="52" rx="8" fill="#ffffff" stroke="#16202a" stroke-width="1.2"/>
+<text x="127.0" y="245" text-anchor="middle" font-size="13" font-weight="600" fill="#16202a">Visitor</text>
+<text x="127.0" y="262" text-anchor="middle" font-size="11" fill="#5a6672">page.html</text>
+<rect x="220" y="225" width="150" height="52" rx="8" fill="#ffffff" stroke="#16202a" stroke-width="1.2"/>
+<text x="295.0" y="245" text-anchor="middle" font-size="13" font-weight="600" fill="#16202a">normalise</text>
+<text x="295.0" y="262" text-anchor="middle" font-size="11" fill="#5a6672">harbor → harbour</text>
+<rect x="388" y="225" width="150" height="52" rx="8" fill="#ffffff" stroke="#1d5b8f" stroke-width="2"/>
+<text x="463.0" y="245" text-anchor="middle" font-size="13" font-weight="600" fill="#1d5b8f">REFUSAL GATE</text>
+<text x="463.0" y="262" text-anchor="middle" font-size="11" fill="#5a6672">6 categories</text>
+<rect x="556" y="225" width="150" height="52" rx="8" fill="#ffffff" stroke="#16202a" stroke-width="1.2"/>
+<text x="631.0" y="245" text-anchor="middle" font-size="13" font-weight="600" fill="#16202a">planner</text>
+<text x="631.0" y="262" text-anchor="middle" font-size="11" fill="#5a6672">rules · Claude optional</text>
+<rect x="724" y="225" width="150" height="52" rx="8" fill="#ffffff" stroke="#16202a" stroke-width="1.2"/>
+<text x="799.0" y="245" text-anchor="middle" font-size="13" font-weight="600" fill="#16202a">7 pandas tools</text>
+<text x="799.0" y="262" text-anchor="middle" font-size="11" fill="#5a6672">medians</text>
+<rect x="892" y="225" width="150" height="52" rx="8" fill="#ffffff" stroke="#16202a" stroke-width="1.2"/>
+<text x="967.0" y="245" text-anchor="middle" font-size="13" font-weight="600" fill="#16202a">evidence grade</text>
+<text x="967.0" y="262" text-anchor="middle" font-size="11" fill="#5a6672">basis · confidence</text>
+<polyline points="202,251 220,251" fill="none" stroke="#16202a" stroke-width="1.4" marker-end="url(#a)"/>
+<text x="211" y="219" text-anchor="middle" font-size="11" fill="#5a6672">asks</text>
+<polyline points="370,251 388,251" fill="none" stroke="#16202a" stroke-width="1.4" marker-end="url(#a)"/>
+<polyline points="538,251 556,251" fill="none" stroke="#16202a" stroke-width="1.4" marker-end="url(#a)"/>
+<text x="547" y="219" text-anchor="middle" font-size="11" fill="#5a6672">allowed</text>
+<polyline points="706,251 724,251" fill="none" stroke="#16202a" stroke-width="1.4" marker-end="url(#a)"/>
+<text x="715" y="219" text-anchor="middle" font-size="11" fill="#5a6672">tool name only</text>
+<polyline points="874,251 892,251" fill="none" stroke="#16202a" stroke-width="1.4" marker-end="url(#a)"/>
+<text x="883" y="219" text-anchor="middle" font-size="11" fill="#5a6672">numbers</text>
+<polyline points="706,84 794,84 794,225" fill="none" stroke="#16202a" stroke-width="1.4" marker-end="url(#a)"/>
+<text x="802" y="150" text-anchor="start" font-size="11" fill="#5a6672">read by</text>
+<polyline points="922,277 922,318 122,318 122,277" fill="none" stroke="#16202a" stroke-width="1.4" marker-end="url(#a)"/>
+<text x="694" y="312" text-anchor="start" font-size="11" fill="#5a6672">answer card: number · basis · confidence</text>
+<polyline points="458,277 458,318" fill="none" stroke="#1d5b8f" stroke-width="1.4"/>
+<text x="466" y="300" font-size="11" fill="#1d5b8f">refused: reason + 2 questions that work</text>
+<rect x="892" y="405" width="150" height="52" rx="8" fill="#ffffff" stroke="#16202a" stroke-width="1.2"/>
+<text x="967.0" y="425" text-anchor="middle" font-size="13" font-weight="600" fill="#16202a">Vercel logs</text>
+<text x="967.0" y="442" text-anchor="middle" font-size="11" fill="#5a6672">kept briefly</text>
+<rect x="724" y="405" width="150" height="52" rx="8" fill="#ffffff" stroke="#16202a" stroke-width="1.2"/>
+<text x="799.0" y="425" text-anchor="middle" font-size="13" font-weight="600" fill="#16202a">review.py</text>
+<text x="799.0" y="442" text-anchor="middle" font-size="11" fill="#5a6672">archive · replay</text>
+<rect x="556" y="405" width="150" height="52" rx="8" fill="#ffffff" stroke="#16202a" stroke-width="1.2"/>
+<text x="631.0" y="425" text-anchor="middle" font-size="13" font-weight="600" fill="#16202a">report</text>
+<text x="631.0" y="442" text-anchor="middle" font-size="11" fill="#5a6672">rephrases · refusals</text>
+<rect x="388" y="405" width="150" height="52" rx="8" fill="#ffffff" stroke="#1d5b8f" stroke-width="2"/>
+<text x="463.0" y="425" text-anchor="middle" font-size="13" font-weight="600" fill="#1d5b8f">HUMAN GATE</text>
+<text x="463.0" y="442" text-anchor="middle" font-size="11" fill="#5a6672">confirm / correct labels</text>
+<rect x="220" y="405" width="150" height="52" rx="8" fill="#ffffff" stroke="#16202a" stroke-width="1.2"/>
+<text x="295.0" y="425" text-anchor="middle" font-size="13" font-weight="600" fill="#16202a">evals/</text>
+<text x="295.0" y="442" text-anchor="middle" font-size="11" fill="#5a6672">134 Qs · 15 tests</text>
+<rect x="52" y="405" width="150" height="52" rx="8" fill="#ffffff" stroke="#16202a" stroke-width="1.2"/>
+<text x="127.0" y="425" text-anchor="middle" font-size="13" font-weight="600" fill="#16202a">deploy</text>
+<text x="127.0" y="442" text-anchor="middle" font-size="11" fill="#5a6672">must pass evals</text>
+<polyline points="1002,277 1002,405" fill="none" stroke="#16202a" stroke-width="1.4" marker-end="url(#a)"/>
+<text x="996" y="378" text-anchor="end" font-size="11" fill="#5a6672">1 log line, no IP</text>
+<polyline points="892,431 874,431" fill="none" stroke="#16202a" stroke-width="1.4" marker-end="url(#a)"/>
+<text x="883" y="399" text-anchor="middle" font-size="11" fill="#5a6672">archive</text>
+<polyline points="724,431 706,431" fill="none" stroke="#16202a" stroke-width="1.4" marker-end="url(#a)"/>
+<text x="715" y="399" text-anchor="middle" font-size="11" fill="#5a6672">replay on today's code</text>
+<polyline points="556,431 538,431" fill="none" stroke="#16202a" stroke-width="1.4" marker-end="url(#a)"/>
+<text x="547" y="399" text-anchor="middle" font-size="11" fill="#5a6672">proposed labels</text>
+<polyline points="388,431 370,431" fill="none" stroke="#1d5b8f" stroke-width="1.4" marker-end="url(#ag)"/>
+<text x="379" y="399" text-anchor="middle" font-size="11" fill="#5a6672">approved</text>
+<polyline points="220,431 202,431" fill="none" stroke="#16202a" stroke-width="1.4" marker-end="url(#a)"/>
+<text x="211" y="399" text-anchor="middle" font-size="11" fill="#5a6672">must pass</text>
+<polyline points="122,405 122,353" fill="none" stroke="#16202a" stroke-width="1.4" marker-end="url(#a)"/>
+<text x="130" y="382" text-anchor="start" font-size="11" fill="#5a6672">ships</text>
+<polyline points="626,457 626,505" fill="none" stroke="#16202a" stroke-width="1.4" marker-end="url(#a)"/>
+<text x="634" y="484" text-anchor="start" font-size="11" fill="#5a6672">refusal counts rank these</text>
+<rect x="52" y="533" width="184" height="48" rx="8" fill="#ffffff" stroke="#16202a" stroke-width="1.2" stroke-dasharray="5 4"/>
+<text x="144.0" y="553" text-anchor="middle" font-size="13" font-weight="600" fill="#16202a">nightly DLD pull</text>
+<text x="144.0" y="570" text-anchor="middle" font-size="11" fill="#5a6672">fresh data, auto</text>
+<rect x="254" y="533" width="184" height="48" rx="8" fill="#ffffff" stroke="#16202a" stroke-width="1.2" stroke-dasharray="5 4"/>
+<text x="346.0" y="553" text-anchor="middle" font-size="13" font-weight="600" fill="#16202a">historic archive</text>
+<text x="346.0" y="570" text-anchor="middle" font-size="11" fill="#5a6672">makes YoY answerable</text>
+<rect x="456" y="533" width="184" height="48" rx="8" fill="#ffffff" stroke="#16202a" stroke-width="1.2" stroke-dasharray="5 4"/>
+<text x="548.0" y="553" text-anchor="middle" font-size="13" font-weight="600" fill="#16202a">supply source</text>
+<text x="548.0" y="570" text-anchor="middle" font-size="11" fill="#5a6672">completions, unsold</text>
+<rect x="658" y="533" width="184" height="48" rx="8" fill="#ffffff" stroke="#16202a" stroke-width="1.2" stroke-dasharray="5 4"/>
+<text x="750.0" y="553" text-anchor="middle" font-size="13" font-weight="600" fill="#16202a">LLM planner</text>
+<text x="750.0" y="570" text-anchor="middle" font-size="11" fill="#5a6672">benchmarked on evals</text>
+<rect x="860" y="533" width="184" height="48" rx="8" fill="#ffffff" stroke="#16202a" stroke-width="1.2" stroke-dasharray="5 4"/>
+<text x="952.0" y="553" text-anchor="middle" font-size="13" font-weight="600" fill="#16202a">loop on a schedule</text>
+<text x="952.0" y="570" text-anchor="middle" font-size="11" fill="#5a6672">weekly roadmap report</text>
+</svg>

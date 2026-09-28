@@ -18,6 +18,12 @@ Built by Pavan Raheja while leading investment and strategy at Dash Capital (Dub
 | **Measured** | 133 labelled questions in five sets, 7 of them typed by a real user on the live site. **First contact on 40 independently written questions: 34/40 (85%). On 30 everyday questions: 18/30 (60%)**, with no wrong refusals but 12 wrong views. After fixes all sets pass (tuned) · 0 missed refusals |
 | **Tests** | 15 unit tests on refusal and evidence behaviour |
 
+## Architecture
+
+![Architecture: data pulled from the land registry into a CSV; each question passes a refusal gate before a planner that only names a tool; pandas computes every number; logs feed a review loop whose proposals pass a human gate before the next deploy](docs/architecture.svg)
+
+Solid = built, dashed = roadmap. Numbers only come from pandas. Two gates: the **refusal gate** runs before any planning, and the **human gate** runs before any change to the eval set. There is no database: the extract is a versioned CSV, so any answer can be reproduced from a commit. Regenerate with `python docs/make_architecture.py`.
+
 ## Run it
 
 ```bash

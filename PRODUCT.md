@@ -95,7 +95,7 @@ Five rules decide the order, and they matter more than the scores:
 | Numeric-accuracy tests: reconcile answers against an independent calculation. The eval sets check routing and refusals, not that a median is right | 3 | 1 | 2 | 1 | ~½ day, $0 | **Now** (rule 1) |
 | Robust trend: Q1 vs Q3 medians with a bootstrap interval, instead of January vs September | 3 | 1 | 2 | 1 | ~½ day, $0 | **Now** (rule 1) |
 | Learning loop on a schedule, so no logs are lost | 2 | – | 1 | 1 | ~1–2 hours, $0 | **Now** (rule 2) |
-| LLM planner benchmarked on all 134 questions, as a constrained classifier with a versioned prompt | 2 | 2 | 2 | 2 | ~1 day; about $0.11 per 100 questions on Claude Sonnet 5, $0.06 on Claude Haiku 4.5 (list prices, ~400 in / 30 out tokens, excluding thinking); needs an API key | **Next**, ships only if missed refusals stay 0 |
+| LLM planner benchmarked on all eval questions (135 today), as a constrained classifier with a versioned prompt | 2 | 2 | 2 | 2 | ~1 day; about $0.11 per 100 questions on Claude Sonnet 5, $0.06 on Claude Haiku 4.5 (list prices, ~400 in / 30 out tokens, excluding thinking); needs an API key | **Next**, ships only if missed refusals stay 0 |
 | Nightly data pull and redeploy | 2 | 0 | 2 | 1 | ~½ day, $0 on free tiers | **Next** |
 | Historic data, so year-on-year becomes answerable | 1 | 1 | 3 | 3 | source and price unknown | **Spike** (rule 4) |
 | Supply data, so "absorbing supply?" becomes answerable | 1 | 1 | 3 | 3 | source unknown; new evidence rules | **Spike** (rule 4) |

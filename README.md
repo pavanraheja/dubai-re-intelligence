@@ -15,7 +15,7 @@ Built by Pavan Raheja while leading investment and strategy at Dash Capital (Dub
 | **Data** | 3,974 real residential sales across Emaar South and Dubai Creek Harbour, pulled from the land department's open-data API by a script (`pipeline/fetch_dld.py`). Every exclusion is listed in `pipeline/extract_report.json` |
 | **Answers** | Seven pandas tools: one-community snapshot, compare communities, monthly price and volume trend (one community, or both side by side, never pooled), breakdown (bedrooms, property type, off-plan vs ready, project), notable deals (latest or largest), data coverage |
 | **Refuses** | Forward-looking, causal, advice, out-of-scope, supply/absorption, and areas outside the extract |
-| **Measured** | 133 labelled questions in five sets, 7 of them typed by a real user on the live site. **First contact on 40 independently written questions: 34/40 (85%). On 30 everyday questions: 18/30 (60%)**, with no wrong refusals but 12 wrong views. After fixes all sets pass (tuned) · 0 missed refusals |
+| **Measured** | 135 labelled questions in five sets, 9 of them typed on the live site. **First contact on 40 independently written questions: 34/40 (85%). On 30 everyday questions: 18/30 (60%)**, with no wrong refusals but 12 wrong views. After fixes all sets pass (tuned) · 0 missed refusals |
 | **Tests** | 15 unit tests on refusal and evidence behaviour |
 
 ## Architecture

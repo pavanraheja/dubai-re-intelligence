@@ -10,7 +10,13 @@ Generate the architecture diagram from one description, in two renderings:
 Kept as code so the diagram changes in the same commit as the system it describes.
 Only built components are solid; dashed = roadmap, not built.
 """
-import os
+import glob, os, re
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Counted, not typed: the diagram must not drift from the repo.
+N_EVAL = sum(1 for f in glob.glob(os.path.join(ROOT, "evals", "questions_*.jsonl"))
+             for line in open(f) if line.strip())
+N_TESTS = len(re.findall(r"^def test_", open(os.path.join(ROOT, "ask", "test_ask.py")).read(), re.M))
 
 W, H = 1066, 600
 BW = 150                                   # box width
@@ -116,7 +122,7 @@ def diagram(theme):
     box(c[4], y, "review.py", "archive · replay")
     box(c[3], y, "report", "rephrases · refusals")
     box(c[2], y, "HUMAN GATE", "confirm / correct labels", accent=True)
-    box(c[1], y, "evals/", "134 Qs · 15 tests")
+    box(c[1], y, "evals/", f"{N_EVAL} Qs · {N_TESTS} tests")
     box(c[0], y, "deploy", "must pass evals")
     arrow([(c[5] + 110, 277), (c[5] + 110, y)], "1 log line, no IP", c[5] + 104, 378, "end")
     arrow([(c[5], 431), (c[4] + BW, 431)], "archive", c[5] - 9, 399)

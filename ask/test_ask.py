@@ -58,6 +58,15 @@ def test_price_ranking_ignores_thin_projects():
     assert all(v["txns"] >= ev.MIN_ROWS_ANSWER for v in data["segments"].values())
 
 
+def test_planner_never_pools_the_two_communities():
+    # 28 Sep live session: "price trend in both" returned one pooled line at HIGH confidence
+    for q in ["price trend in both", "price trend in comparison", "monthly trend",
+              "split sales by bedrooms", "off-plan vs ready prices", "breakdown by property type"]:
+        for name, kw in plan_rules(q):
+            if name in ("price_trend", "segment_breakdown"):
+                assert kw.get("area") is not None, f"pooled {name} for: {q}"
+
+
 def test_normal_question_is_not_refused():
     a = ask("Compare the two communities over 12 months")
     assert a["scope_refusals"] == []

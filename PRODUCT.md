@@ -29,6 +29,7 @@ So the product is narrow on purpose: two communities, every number carrying its 
 4. Refusals are checked **before** anything is computed, and each one says why.
 5. When the data is stale, or the comparison is not like-for-like, the answer says so and is downgraded.
 6. Every threshold is a named constant in one file (`ask/evidence.py`), so the rules can be argued with instead of being buried.
+7. **The two communities are never pooled into one number.** A pooled median is mostly the bigger community and can move on mix alone. When no community is named, each is shown separately.
 
 ## How it is measured
 - **Guardrail metric: missed refusals** (answering a question the data cannot support). Target: zero. This is the expensive error.
@@ -64,6 +65,7 @@ So the product is narrow on purpose: two communities, every number carrying its 
 | 27 Sep 2026 | Add advice and unknown-area refusals, and an independent eval set | Baseline eval: 21 questions answered that should have been refused |
 | 27 Sep 2026 | Dashboard: "BUY / SELL" signals renamed to momentum labels; rental yields labelled MODELLED | The same product cannot refuse advice in one screen and give it in the next. Rents are hard-coded 2025 estimates, not registry data |
 | 27 Sep 2026 | Add a one-community snapshot, notable deals, project and off-plan splits; refusals suggest answerable questions | First live session: the hand-typed question got a generic table, and refusals read as failures. Everyday set 18/30 → 30/30 |
+| 28 Sep 2026 | Never pool the two communities; trends in "both" are shown side by side | Second live session: "price trend in both" returned one pooled line (−1.6%, HIGH confidence) while the two communities actually moved in opposite directions (−2.1% and +2.2%). Real-user set 5/7 → 7/7 |
 | 27 Sep 2026 | Dashboard: stop blending synthetic history into real charts | A concat bug was silently dropping every real row, so the dashboard reported real data while plotting synthetic data |
 
 ## What's next, in priority order

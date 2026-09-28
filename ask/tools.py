@@ -198,6 +198,32 @@ def community_snapshot(area="DUBAI CREEK HARBOUR"):
             "busiest_month": str(monthly["txns"].idxmax()) if len(monthly) else None}, e
 
 
+# ── TOOL 7 ────────────────────────────────────────────────────────────────
+def compare_trends(months=24):
+    """Each community's monthly price and volume, side by side — never pooled.
+    A pooled line is mostly whichever community sells more, and can move on mix alone."""
+    df, source = load()
+    cutoff = df["date"].max() - pd.DateOffset(months=months)
+    d = df[df["date"] >= cutoff]
+    out, sizes = {}, []
+    for a in sorted(d["area"].unique()):
+        g = d[d["area"] == a].groupby("ym").agg(txns=("price_aed", "size"), med=("ppsf", "median"))
+        vol = {str(k): int(v) for k, v in g["txns"].items()}
+        g = g[g["txns"] >= 5]
+        series = {str(k): round(v, 1) for k, v in g["med"].items()}
+        vals = list(series.values())
+        out[a] = {"monthly_median_ppsf": series, "monthly_sales": vol,
+                  "first": vals[0] if vals else None, "last": vals[-1] if vals else None,
+                  "change_pct": round((vals[-1] / vals[0] - 1) * 100, 1) if len(vals) >= 2 else None}
+        sizes.append(int(g["txns"].sum()))
+    e = ev.grade(sizes, _window(d), source)
+    ch = [v["change_pct"] for v in out.values() if v["change_pct"] is not None]
+    if len(ch) == 2 and (ch[0] > 0) != (ch[1] > 0):
+        e.caveats.append("the two communities moved in opposite directions — a combined "
+                         "figure would hide this, which is why none is given")
+    return {"communities": out}, e
+
+
 # ── TOOL 6 ────────────────────────────────────────────────────────────────
 def notable_transactions(area=None, kind="recent", n=8):
     """Individual registered sales: the most recent, or the largest by price."""
@@ -221,6 +247,7 @@ def notable_transactions(area=None, kind="recent", n=8):
 
 
 TOOLS = {
+    "compare_trends": compare_trends,
     "notable_transactions": notable_transactions,
     "community_snapshot": community_snapshot,
     "compare_communities": compare_communities,

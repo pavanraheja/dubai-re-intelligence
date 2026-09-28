@@ -63,6 +63,7 @@ a{color:var(--accent)}
     <span class="chip">Compare the two communities</span>
     <span class="chip">Most expensive projects in Creek Harbour</span>
     <span class="chip">Off-plan vs ready prices in Emaar South</span>
+    <span class="chip">Price trend in both communities</span>
     <span class="chip">Sales volume by month in Emaar South</span>
     <span class="chip">Biggest deals in Creek Harbour</span>
     <span class="chip">Split Creek Harbour sales by bedrooms</span>
@@ -125,6 +126,25 @@ function spark(series) {
     <text x="4" y="${y(lo) + 4}" font-size="12" fill="var(--muted)">${n(lo)}</text></svg>`;
 }
 
+// Two communities on one chart, one shared scale, each line its own colour — never averaged.
+function spark2(cs, months, colors) {
+  const all = cs.flatMap(([, v]) => Object.values(v.monthly_median_ppsf));
+  if (all.length < 2 || months.length < 2) return "";
+  const W = 600, H = 150, P = 28, L = 64, lo = Math.min(...all), hi = Math.max(...all), span = hi - lo || 1;
+  const x = i => L + i * (W - L - P) / (months.length - 1), y = v => H - P - (v - lo) / span * (H - 2 * P);
+  const lines = cs.map(([a, v], c) => {
+    const pts = months.map((m, i) => [i, v.monthly_median_ppsf[m]]).filter(([, val]) => val != null);
+    const path = pts.map(([i, val], k) => `${k ? "L" : "M"}${x(i).toFixed(1)},${y(val).toFixed(1)}`).join("");
+    return `<path d="${path}" fill="none" stroke="${colors[c]}" stroke-width="2.5"/>` +
+      pts.map(([i, val]) => `<circle cx="${x(i)}" cy="${y(val)}" r="3" fill="${colors[c]}"><title>${title(a)} ${months[i]}: AED ${n(val)}/sqft</title></circle>`).join("");
+  }).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="monthly median price per sqft, each community separately">${lines}
+    <text x="${L}" y="${H - 6}" font-size="12" fill="var(--muted)">${months[0]}</text>
+    <text x="${W - P}" y="${H - 6}" font-size="12" fill="var(--muted)" text-anchor="end">${months[months.length - 1]}</text>
+    <text x="4" y="${y(hi) + 4}" font-size="12" fill="var(--muted)">${n(hi)}</text>
+    <text x="4" y="${y(lo) + 4}" font-size="12" fill="var(--muted)">${n(lo)}</text></svg>`;
+}
+
 function body(tool, d) {
   if (tool === "compare_communities")
     return table(["Community", "Sales", "Median AED/sqft", "Median price AED", "Off-plan", "YoY"],
@@ -149,10 +169,18 @@ function body(tool, d) {
       ["Busiest month", esc(d.busiest_month || "—")],
       ["Bedroom mix", Object.entries(d.top_bedrooms || {}).map(([k, v]) => `${esc(k)} ${v}%`).join(" · ")]]);
   }
+  if (tool === "compare_trends") {
+    const cs = Object.entries(d.communities), colors = ["var(--accent)", "var(--warn-ink)"];
+    const months = [...new Set(cs.flatMap(([, v]) => Object.keys(v.monthly_sales)))].sort();
+    const head = cs.map(([a, v], i) => `<span style="color:${colors[i]};font-weight:600">● ${title(a)}</span> ${v.change_pct == null ? "" : (v.change_pct > 0 ? "+" : "") + v.change_pct + "%"}`).join(" &nbsp; ");
+    return `<p>${head}</p>` + spark2(cs, months, colors) +
+      table(["Month", ...cs.flatMap(([a]) => [title(a) + " sales", "AED/sqft"])],
+        months.map(m => [esc(m), ...cs.flatMap(([, v]) => [n(v.monthly_sales[m] || 0), v.monthly_median_ppsf[m] == null ? "too few" : n(v.monthly_median_ppsf[m])])]));
+  }
   if (tool === "notable_transactions")
     return `<p class="muted">${title(d.area)} · ${d.kind === "largest" ? "largest sales by price" : "most recent sales"}</p>` +
-      table(["Date", "Project", "Beds", "Status", "Sqft", "Price AED", "AED/sqft"],
-        d.transactions.map(t => [esc(t.date), esc(t.project), esc(t.rooms), esc(t.status), n(t.sqft), n(t.price_aed), n(t.ppsf)]));
+      table(["Date", ...(d.area === "all" ? ["Community"] : []), "Project", "Beds", "Status", "Sqft", "Price AED", "AED/sqft"],
+        d.transactions.map(t => [esc(t.date), ...(d.area === "all" ? [title(t.area)] : []), esc(t.project), esc(t.rooms), esc(t.status), n(t.sqft), n(t.price_aed), n(t.ppsf)]));
   if (tool === "segment_breakdown")
     return `<p class="muted">${title(d.area)} · by ${esc({rooms: "bedrooms", reg_type: "off-plan vs ready", project_en: "project (top 10)"}[d.by] || "property type")}</p>` +
       table(["Segment", "Sales", "Median AED/sqft", "Value AED m"],

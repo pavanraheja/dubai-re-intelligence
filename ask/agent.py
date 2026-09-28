@@ -55,9 +55,9 @@ def plan_rules(question):
         sort = "ppsf" if any(w in q for w in ("expensive", "cheap", "priciest", "premium", "price")) and project else "txns"
         by = ("project_en" if project else "reg_type" if ready
               else "rooms" if rooms else "property_type")
-        both = area is None and any(w in q for w in ("between", "both", "two", " vs ", "compare",
-                                                     "versus"))
-        if both:
+        # No community named → one breakdown per community. Never pool the two: a pooled
+        # median is mostly the bigger community and can move on mix alone.
+        if area is None:
             return [("segment_breakdown", {"area": a, "by": by, "months": months, "sort": sort})
                     for a in ("DUBAI CREEK HARBOUR", "EMAAR SOUTH")]
         return [("segment_breakdown", {"area": area, "by": by, "months": months, "sort": sort})]
@@ -67,6 +67,8 @@ def plan_rules(question):
                             "trajectory", "track", "dips", "moved", "going up", "going down",
                             "cooling", "heating", "since", "change", "by month", "per month",
                             "demand")):
+        if area is None:     # "trend in both", "in comparison", or no community named
+            return [("compare_trends", {"months": max(months, 24)})]
         return [("price_trend", {"area": area, "months": max(months, 24)})]
     if any(w in q for w in ("compare", "versus", " vs ", "better", "faster", "outperform",
                             "which community", "absorb", "two communities", "which of the two",
@@ -200,6 +202,12 @@ def _fmt(name, d):
         for seg, v in list(d.get("segments", {}).items())[:6]:
             lines.append(f"  {seg:<22} {v['txns']:>5} txns · AED {v['median_ppsf']}/sqft · "
                          f"AED {v['value_aed_m']}m total")
+    elif name == "compare_trends":
+        for a, v in d["communities"].items():
+            ch = f"{v['change_pct']:+.1f}%" if v["change_pct"] is not None else "n/a"
+            ks = list(v["monthly_median_ppsf"])
+            lines.append(f"  {a.title():<22} AED {v['first']}/sqft ({ks[0] if ks else '?'}) → "
+                         f"AED {v['last']}/sqft ({ks[-1] if ks else '?'}) · {ch}")
     elif name == "notable_transactions":
         for t in d["transactions"]:
             lines.append(f"  {t['date']}  {str(t['project'])[:26]:<26} {t['rooms']:<7} {t['status']:<8} "

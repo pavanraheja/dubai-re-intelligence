@@ -44,6 +44,8 @@ Every live question is logged with what the tool did. `insights/review.py` reads
 
 It learns through people, on purpose. It never edits a rule, threshold or label itself: a public input that retrained its own rules could be steered by anyone typing into it. The loop proposes, a person labels, the eval set grows, and the next change is measured against it. Its first run, on the owner's own sessions, flagged the exact rephrase chain that exposed the pooled-trend bug, from timing and shared words alone.
 
+**First live catch, 28 Sep:** "how many studios sold in creek harbour recently" was routed to the latest-deals list because of the word "recently". The loop proposed it as an eval candidate with the suggested label `notable_transactions`, which was the bug itself. Auto-accepting that label would have written the mistake into the test set as correct. A person corrected it to a bedroom breakdown; the fix now also says "no studio sales recorded, the answer is zero" instead of listing other segments. That is why the human gate exists.
+
 Privacy: no IP or identifying data is logged, and visitors' questions are never committed to the public repo.
 
 ## What was deliberately cut

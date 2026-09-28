@@ -42,12 +42,15 @@ def plan_rules(question):
                             "only cover", "included in", "dataset")):
         return [("data_coverage", {})]
     project = any(w in q for w in ("project", "building", "tower", "development"))
-    if not project and any(w in q for w in ("latest", "recent", "biggest", "largest", "highest",
-                                            "record", "most expensive deal", "most expensive sale",
-                                            "top deal", "top sale")):
+    rooms = re.search(r"\b(\d\s?-?\s?(bed|br|b/r)\w*|studios?|bedrooms?)\b", q)
+    # "how many studios sold recently" is a count by segment, not a list of deals
+    # (found by the learning loop, 28 Sep). Individual deals only when nothing is being counted.
+    counting = rooms or "how many" in q or "how much" in q
+    if not project and not counting and any(w in q for w in (
+            "latest", "recent", "biggest", "largest", "highest", "record", "most expensive deal",
+            "most expensive sale", "top deal", "top sale")):
         kind = "recent" if any(w in q for w in ("latest", "recent")) else "largest"
         return [("notable_transactions", {"area": area, "kind": kind})]
-    rooms = re.search(r"\b(\d\s?-?\s?(bed|br|b/r)\w*|studios?|bedrooms?)\b", q)
     ready = re.search(r"\bready\b", q)
     if project or ready or rooms or any(w in q for w in (
             "breakdown", "break down", "segment", "split", "villa", "apartment", "townhouse",
@@ -149,6 +152,13 @@ def ask(question, planner="auto"):
             data, e = fn(**kwargs)
         except TypeError:
             data, e = fn()
+        # Asked about a segment with zero sales? Say "none" instead of listing the others.
+        if name == "segment_breakdown" and data.get("by") == "rooms":
+            asked = {"studio": "Studio"} if re.search(r"\bstudios?\b", question.lower()) else {}
+            for word, seg in asked.items():
+                if not any(seg.lower() in k.lower() for k in data.get("segments", {})):
+                    e.caveats.insert(0, f"no {word} sales recorded in "
+                                        f"{data['area'].title()} in this extract — the answer is zero")
         results.append((name, data, e))
 
     return {"question": question,

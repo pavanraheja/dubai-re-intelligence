@@ -35,3 +35,4 @@
 {"id": "u05", "split": "real_user", "q": "price trend in creek harbor", "expect": ["answer:price_trend"], "note": "live site 28 Sep 17:30"}
 {"id": "u06", "split": "real_user", "q": "Off-plan vs ready prices in Emaar South", "expect": ["answer:segment_breakdown"], "note": "live site 28 Sep 17:29, example chip"}
 {"id": "u07", "split": "real_user", "q": "Should I buy in Emaar South?", "expect": ["refuse:advice"], "note": "live site 28 Sep 17:14, example chip"}
+{"id": "u08", "split": "real_user", "q": "how many studios sold in creek harbour recently", "expect": ["answer:segment_breakdown"], "note": "live site 28 Sep; proposed by insights/review.py with suggested label notable_transactions, which was the bug. Human-corrected"}

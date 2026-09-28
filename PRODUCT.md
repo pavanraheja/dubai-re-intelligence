@@ -39,6 +39,13 @@ So the product is narrow on purpose: two communities, every number carrying its 
 - **First real user session (27 Sep):** the only question typed by hand, "what is going on with Dubai creek harbor", got a generic two-community table, and the five refused-on-purpose examples read as failures. Lesson: **a wrong view feels like a refusal**, so over-routing is measured too. A 30-question everyday set scored 18/30 before fixes and 30/30 after (tuned). Every refusal now offers one-tap questions the data can answer.
 - **The independent set's first-contact score was 34/40 (85%).** It found a real bug: `rent` matched inside "cu*rrent*". It now scores 40/40, but that is a tuned number. The next clean number needs a new independent set.
 
+## The learning loop (how the product gets better from use)
+Every live question is logged with what the tool did. `insights/review.py` reads the logs and reports four things: where people **rephrased** (the answer probably missed), which **refusals** are most common (demand for data the product lacks, mapped to roadmap items), which questions the planner **did not recognise**, and new questions proposed as **eval candidates**.
+
+It learns through people, on purpose. It never edits a rule, threshold or label itself: a public input that retrained its own rules could be steered by anyone typing into it. The loop proposes, a person labels, the eval set grows, and the next change is measured against it. Its first run, on the owner's own sessions, flagged the exact rephrase chain that exposed the pooled-trend bug, from timing and shared words alone.
+
+Privacy: no IP or identifying data is logged, and visitors' questions are never committed to the public repo.
+
 ## What was deliberately cut
 | Cut | Why |
 |---|---|
@@ -65,6 +72,7 @@ So the product is narrow on purpose: two communities, every number carrying its 
 | 27 Sep 2026 | Add advice and unknown-area refusals, and an independent eval set | Baseline eval: 21 questions answered that should have been refused |
 | 27 Sep 2026 | Dashboard: "BUY / SELL" signals renamed to momentum labels; rental yields labelled MODELLED | The same product cannot refuse advice in one screen and give it in the next. Rents are hard-coded 2025 estimates, not registry data |
 | 27 Sep 2026 | Add a one-community snapshot, notable deals, project and off-plan splits; refusals suggest answerable questions | First live session: the hand-typed question got a generic table, and refusals read as failures. Everyday set 18/30 → 30/30 |
+| 28 Sep 2026 | Build the learning loop: log outcomes, flag rephrase chains, map refusals to roadmap, propose eval candidates; human approves every change | Both live bugs were found by a person noticing a rephrase. That should not depend on someone watching |
 | 28 Sep 2026 | Never pool the two communities; trends in "both" are shown side by side | Second live session: "price trend in both" returned one pooled line (−1.6%, HIGH confidence) while the two communities actually moved in opposite directions (−2.1% and +2.2%). Real-user set 5/7 → 7/7 |
 | 27 Sep 2026 | Dashboard: stop blending synthetic history into real charts | A concat bug was silently dropping every real row, so the dashboard reported real data while plotting synthetic data |
 
@@ -72,7 +80,7 @@ So the product is narrow on purpose: two communities, every number carrying its 
 1. **Benchmark an LLM planner against the same eval sets**, as a constrained classifier with a versioned prompt and locked settings. Publish accuracy **and** cost per 100 questions next to the rules planner, and ship whichever wins on missed refusals.
 2. **Historic data** (the land department's bulk archive), so year-on-year moves from refused to answerable.
 3. **Supply data** (project completions), so the most-asked refused question becomes an answer.
-4. **Log refused questions.** The most-refused category is the roadmap: it shows what decision-makers need that the data does not yet give them.
+4. **Run the learning loop on a schedule** (built; see above) and review its report weekly. The most-refused category is the roadmap: it shows what decision-makers need that the data does not yet give them.
 
 ## Carrying the pattern beyond real estate
 Nothing here is specific to property. Any agent that speaks to a decision-maker, such as an economic, fiscal or trade analyst answering a ministry, needs the same contract: **declare the source, declare the refusal categories, publish the eval score before it ships.** On a platform with many agents, the platform should enforce that contract so no agent can skip it. That is what makes a set of agents trustworthy, and it scales better than reviewing each agent by hand.

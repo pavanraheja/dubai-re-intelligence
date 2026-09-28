@@ -28,6 +28,7 @@ python ask.py --demo                # the full question set, including the ones 
 python evals/run_eval.py            # score every labelled question
 python ask/test_ask.py              # 15 unit tests
 python pipeline/fetch_dld.py        # re-pull the real data (1 Jan this year → today)
+python insights/review.py           # read live logs → rephrase chains, refusal demand, eval candidates
 ```
 
 ## `ask/` — the question layer
@@ -88,6 +89,18 @@ Every threshold is a named constant in `ask/evidence.py`, so the rules are argua
 - `questions_everyday_v1.jsonl`: the **first question typed on the live site** ("what is going on with Dubai creek harbor", which got a generic table) plus 30 everyday phrasings. **Baseline: 18/30.** Nothing was wrongly refused, but 12 went to the wrong view, which feels like a refusal to the person asking. Now 30/30 after adding a community snapshot, notable deals, project and off-plan splits, and spelling tolerance.
 - **Second live session (28 Sep):** "price trend in both" returned a single pooled line at HIGH confidence. Pooling hid that the two communities moved in opposite directions. The planner now never pools them, and a regression test enforces it.
 - The error that matters is the **missed refusal**, a confident number that should not exist. It is reported separately from over-refusal.
+
+## `insights/` — the learning loop
+
+Every question asked on the live site is logged as one structured line: the question and what the tool did, with no IP and nothing that identifies the visitor. `python insights/review.py` then:
+
+1. **archives** new questions locally (Vercel keeps logs briefly; the archive makes it cumulative);
+2. **replays** each one against the current code, showing what the visitor saw then and what they would see now;
+3. **flags rephrase chains** (a typed question followed within 2 minutes by another sharing a word). People rephrase when the answer missed;
+4. **counts refusals as demand** and maps each category to the roadmap item that would turn it into an answer;
+5. **proposes** new typed questions as eval candidates with a *suggested* label.
+
+It never changes a rule, threshold or eval label by itself. A public text box that rewrote its own rules could be steered by anyone typing into it, so the loop proposes and a person approves. See [`insights/sample_report_2026-09-28.md`](insights/sample_report_2026-09-28.md): run on the owner's own sessions, it flagged the exact chain that exposed the pooled-trend bug, from timing and shared words alone. Visitors' questions stay out of git.
 
 ## `pipeline/` — where the data comes from
 

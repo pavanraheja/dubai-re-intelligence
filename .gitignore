@@ -13,3 +13,7 @@ dashboard/data/transactions-*.csv
 .claude/
 .vercel
 __pycache__/
+
+# learning loop: visitors' questions stay local
+insights/data/
+insights/reports/

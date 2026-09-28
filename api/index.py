@@ -37,8 +37,13 @@ def api_ask():
     q = (request.args.get("q") or "").strip()[:300]
     if not q:
         return jsonify({"error": "empty question"}), 400
-    return Response(json.dumps(as_json(ask(q, planner="rules")), default=str),
-                    mimetype="application/json")
+    a = ask(q, planner="rules")
+    # One structured line per question for insights/review.py. The question and what the
+    # tool did with it — no IP, no headers, nothing that identifies the visitor.
+    print(json.dumps({"event": "ask", "q": q, "tools": [n for n, _, _ in a["results"]],
+                      "refused": [r.split(" — ")[0] for r in a["scope_refusals"]],
+                      "confidence": [e.confidence for _, _, e in a["results"]]}), flush=True)
+    return Response(json.dumps(as_json(a), default=str), mimetype="application/json")
 
 
 @app.get("/api/meta")

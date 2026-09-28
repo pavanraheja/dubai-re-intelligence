@@ -36,6 +36,9 @@ th,td{text-align:right;padding:7px 8px;border-bottom:1px solid var(--line);white
 th:first-child,td:first-child{text-align:left}
 th{font-weight:600;color:var(--muted);font-size:12px}
 .scroll{overflow-x:auto}
+.minis{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:6px}
+.mini{border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.mini p{margin:0 0 4px;font-size:14px}
 .ev{margin-top:10px;font-size:13px}
 .badge{display:inline-block;padding:2px 8px;border-radius:6px;font-weight:700;font-size:12px;margin-right:6px}
 .HIGH{background:var(--ok-bg);color:var(--ok-ink)}.MEDIUM,.LOW{background:var(--warn-bg);color:var(--warn-ink)}.INSUFFICIENT{background:var(--refuse-bg);color:var(--refuse-ink)}
@@ -111,36 +114,17 @@ function table(head, rows) {
     rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join("")}</tr>`).join("") + `</table></div>`;
 }
 
-function spark(series) {
+function spark(series, color = "var(--accent)", W = 600, H = 120) {
   const k = Object.keys(series), v = Object.values(series);
   if (v.length < 2) return "";
-  const W = 600, H = 120, P = 28, L = 64, lo = Math.min(...v), hi = Math.max(...v), span = hi - lo || 1;
+  const P = 28, L = 64, lo = Math.min(...v), hi = Math.max(...v), span = hi - lo || 1;
   const x = i => L + i * (W - L - P) / (v.length - 1), y = val => H - P - (val - lo) / span * (H - 2 * P);
   const d = v.map((val, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(val).toFixed(1)}`).join("");
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="monthly median price per sqft">
-    <path d="${d}" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
-    ${v.map((val, i) => `<circle cx="${x(i)}" cy="${y(val)}" r="3" fill="var(--accent)"><title>${k[i]}: AED ${n(val)}/sqft</title></circle>`).join("")}
+    <path d="${d}" fill="none" stroke="${color}" stroke-width="2.5"/>
+    ${v.map((val, i) => `<circle cx="${x(i)}" cy="${y(val)}" r="3" fill="${color}"><title>${k[i]}: AED ${n(val)}/sqft</title></circle>`).join("")}
     <text x="${L}" y="${H - 6}" font-size="12" fill="var(--muted)">${k[0]}</text>
     <text x="${W - P}" y="${H - 6}" font-size="12" fill="var(--muted)" text-anchor="end">${k[k.length - 1]}</text>
-    <text x="4" y="${y(hi) + 4}" font-size="12" fill="var(--muted)">${n(hi)}</text>
-    <text x="4" y="${y(lo) + 4}" font-size="12" fill="var(--muted)">${n(lo)}</text></svg>`;
-}
-
-// Two communities on one chart, one shared scale, each line its own colour — never averaged.
-function spark2(cs, months, colors) {
-  const all = cs.flatMap(([, v]) => Object.values(v.monthly_median_ppsf));
-  if (all.length < 2 || months.length < 2) return "";
-  const W = 600, H = 150, P = 28, L = 64, lo = Math.min(...all), hi = Math.max(...all), span = hi - lo || 1;
-  const x = i => L + i * (W - L - P) / (months.length - 1), y = v => H - P - (v - lo) / span * (H - 2 * P);
-  const lines = cs.map(([a, v], c) => {
-    const pts = months.map((m, i) => [i, v.monthly_median_ppsf[m]]).filter(([, val]) => val != null);
-    const path = pts.map(([i, val], k) => `${k ? "L" : "M"}${x(i).toFixed(1)},${y(val).toFixed(1)}`).join("");
-    return `<path d="${path}" fill="none" stroke="${colors[c]}" stroke-width="2.5"/>` +
-      pts.map(([i, val]) => `<circle cx="${x(i)}" cy="${y(val)}" r="3" fill="${colors[c]}"><title>${title(a)} ${months[i]}: AED ${n(val)}/sqft</title></circle>`).join("");
-  }).join("");
-  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="monthly median price per sqft, each community separately">${lines}
-    <text x="${L}" y="${H - 6}" font-size="12" fill="var(--muted)">${months[0]}</text>
-    <text x="${W - P}" y="${H - 6}" font-size="12" fill="var(--muted)" text-anchor="end">${months[months.length - 1]}</text>
     <text x="4" y="${y(hi) + 4}" font-size="12" fill="var(--muted)">${n(hi)}</text>
     <text x="4" y="${y(lo) + 4}" font-size="12" fill="var(--muted)">${n(lo)}</text></svg>`;
 }
@@ -172,8 +156,14 @@ function body(tool, d) {
   if (tool === "compare_trends") {
     const cs = Object.entries(d.communities), colors = ["var(--accent)", "var(--warn-ink)"];
     const months = [...new Set(cs.flatMap(([, v]) => Object.keys(v.monthly_sales)))].sort();
-    const head = cs.map(([a, v], i) => `<span style="color:${colors[i]};font-weight:600">● ${title(a)}</span> ${v.change_pct == null ? "" : (v.change_pct > 0 ? "+" : "") + v.change_pct + "%"}`).join(" &nbsp; ");
-    return `<p>${head}</p>` + spark2(cs, months, colors) +
+    // One chart per community, each on its own scale. On a shared axis the cheaper community's
+    // line flattens and its trend disappears (live session, 28 Sep: "...but show me both").
+    const charts = cs.map(([a, v], i) => `<div class="mini">
+        <p><b style="color:${colors[i]}">${title(a)}</b> · ${v.change_pct == null ? "n/a" : (v.change_pct > 0 ? "+" : "") + v.change_pct + "%"}
+          <span class="muted">· AED ${n(v.first)} → ${n(v.last)}/sqft</span></p>
+        ${spark(v.monthly_median_ppsf, colors[i], 440, 150)}</div>`).join("");
+    return `<div class="minis">${charts}</div>` +
+      `<p class="muted" style="font-size:13px">Each chart has its own price scale so both shapes are visible; compare levels in the table.</p>` +
       table(["Month", ...cs.flatMap(([a]) => [title(a) + " sales", "AED/sqft"])],
         months.map(m => [esc(m), ...cs.flatMap(([, v]) => [n(v.monthly_sales[m] || 0), v.monthly_median_ppsf[m] == null ? "too few" : n(v.monthly_median_ppsf[m])])]));
   }
@@ -229,7 +219,7 @@ function suggest(reason, q) {
 let seq = 0, typed = false;
 async function go(q, opening = false) {
   if (!q.trim()) return;
-  if (opening && typed) return;           // the visitor started typing; leave their input alone
+  if (opening && (typed || $("#q").value.trim())) return;   // visitor already typing: leave it alone
   const mine = ++seq;
   if (!opening) $("#q").value = q;
   $("#out").innerHTML = `<p class="muted">Working…</p>`;

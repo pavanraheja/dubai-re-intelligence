@@ -61,6 +61,7 @@ Privacy: no IP or identifying data is logged, and visitors' questions are never 
 - **Current calendar year only.** The land department's public API serves nothing before 1 Jan 2026 (checked: earlier ranges return empty, not an error). Year-on-year is therefore *not computed*, rather than estimated.
 - **Townhouses are recorded as villas** in the registry. That split cannot be recovered from this source.
 - **"Emaar South" does not exist in the registry.** It is defined by project name in `pipeline/communities.py`, and every excluded project in those registry areas is listed in `pipeline/extract_report.json`. That report caught Grove Ridge and Vista Ridge on the first pull: 348 sales, which would have been a 30% undercount.
+- **Presentation is not tested.** The eval sets check which tool answers and what is refused, not whether a chart shows the answer. The only signal today is a rephrase that gets the same answer, which the learning loop flags.
 - The rules planner is keyword-based. It is measured, not magic, and it will meet phrasings it has not seen.
 
 ## Decision log
@@ -74,6 +75,7 @@ Privacy: no IP or identifying data is logged, and visitors' questions are never 
 | 27 Sep 2026 | Add advice and unknown-area refusals, and an independent eval set | Baseline eval: 21 questions answered that should have been refused |
 | 27 Sep 2026 | Dashboard: "BUY / SELL" signals renamed to momentum labels; rental yields labelled MODELLED | The same product cannot refuse advice in one screen and give it in the next. Rents are hard-coded 2025 estimates, not registry data |
 | 27 Sep 2026 | Add a one-community snapshot, notable deals, project and off-plan splits; refusals suggest answerable questions | First live session: the hand-typed question got a generic table, and refusals read as failures. Everyday set 18/30 → 30/30 |
+| 28 Sep 2026 | One chart per community for "both" trends, each on its own scale | Third live session: "price trend in both, but show me both". Routing was right, but on a shared axis Emaar South's +2.2% flattened into a straight line under Creek Harbour. The loop now flags a rephrase that gets the same answer as a presentation miss, a failure class the eval sets cannot see |
 | 28 Sep 2026 | Build the learning loop: log outcomes, flag rephrase chains, map refusals to roadmap, propose eval candidates; human approves every change | Both live bugs were found by a person noticing a rephrase. That should not depend on someone watching |
 | 28 Sep 2026 | Never pool the two communities; trends in "both" are shown side by side | Second live session: "price trend in both" returned one pooled line (−1.6%, HIGH confidence) while the two communities actually moved in opposite directions (−2.1% and +2.2%). Real-user set 5/7 → 7/7 |
 | 27 Sep 2026 | Dashboard: stop blending synthetic history into real charts | A concat bug was silently dropping every real row, so the dashboard reported real data while plotting synthetic data |

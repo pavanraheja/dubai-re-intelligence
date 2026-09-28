@@ -198,6 +198,14 @@ def report(rows, added, sessions, chains, demand, candidates, fallbacks):
     for c in chains:
         out.append(f"**Chain at {when(c[0]['ts'])}** — {len(c)} questions in "
                    f"{(c[-1]['ts'] - c[0]['ts']) / 1000:.0f}s")
+        repeats = [b for a, b in zip(c, c[1:])
+                   if a["then"] and b["then"] and label(a["then"]) == label(b["then"])]
+        if repeats:
+            out.append("")
+            out.append(f"> A rephrase got the same answer again (`{label(repeats[0]['then'])}` for "
+                       f"\"{repeats[0]['q']}\"). The routing did not change, so the miss is likely in "
+                       "**presentation or content**, which the eval sets do not test. Look at what the "
+                       "answer showed.")
         out += ["", "| Asked | Then | Now |", "|---|---|---|"]
         out += [f"| {r['q']} | {label(r['then'])} | {label(r['now'])} |" for r in c]
         out.append("")

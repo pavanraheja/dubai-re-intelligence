@@ -63,13 +63,10 @@ details summary{cursor:pointer;color:var(--muted)}
   <div class="card">
     <h2>1 · Frame the decision</h2>
     <div class="row">
-      <label for="budget">Ticket size (AED)
-        <select id="budget">
-          <option value="300000-1000000">300k – 1M</option>
-          <option value="1000000-2500000" selected>1M – 2.5M</option>
-          <option value="2500000-5000000">2.5M – 5M</option>
-          <option value="0-100000000">Any</option>
-        </select></label>
+      <label for="bmin">Budget from (AED millions)
+        <input type="number" id="bmin" value="1" min="0" max="50" step="0.5" style="width:110px"></label>
+      <label for="bmax">to (AED millions)
+        <input type="number" id="bmax" value="2.5" min="0.5" max="50" step="0.5" style="width:110px"></label>
       <label for="stage">Stage
         <select id="stage">
           <option value="all">Off-plan and ready</option>
@@ -162,7 +159,8 @@ let timer;
 function schedule() { clearTimeout(timer); timer = setTimeout(load, 250); }
 
 async function load() {
-  const [bmin, bmax] = $("#budget").value.split("-");
+  // a budget someone actually has (e.g. 4–5M) rather than a fixed band; found when asked "what if 4–5M?"
+  const bmin = Math.round(parseFloat($("#bmin").value || 0) * 1e6), bmax = Math.round(parseFloat($("#bmax").value || 50) * 1e6);
   const q = new URLSearchParams({budget_min: bmin, budget_max: bmax, stage: $("#stage").value, expo: $("#expo").value});
   if (preset === "custom") Object.entries(weights).forEach(([c, v]) => v > 0 && q.set("w_" + c, v));
   else q.set("preset", preset);
@@ -249,7 +247,7 @@ Must verify before committing (not in sales data):
 ${r.global_gaps.map(g => "  [ ] " + g).join("\n")}`;
 }
 
-["budget", "stage", "expo"].forEach(id => $("#" + id).addEventListener("change", schedule));
+["bmin", "bmax", "stage", "expo"].forEach(id => $("#" + id).addEventListener("change", schedule));
 ["choice", "why", "kill"].forEach(id => $("#" + id).addEventListener("input", memo));
 $("#choice").addEventListener("change", memo);
 $("#copy").addEventListener("click", async () => {

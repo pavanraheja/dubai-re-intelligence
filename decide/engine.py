@@ -192,6 +192,13 @@ def run(preset="demand_first", weights=None, budget=(1_000_000, 2_500_000), stag
     if len(stages) == 2:
         warnings.append("Off-plan and ready projects are ranked together: prices are not like-for-like "
                         "(off-plan prices are launch prices). Use the stage filter to compare within one.")
+    if 0 < len(options) <= 3:
+        warnings.append(f"Only {len(options)} project(s) pass this frame. A ranking of so few options says more about "
+                        "the budget than the market; widen the band to see what you are trading off against.")
+    thin_band = [o["project"] for o in options[:3] if o["in_budget_share"] < .5]
+    if thin_band:
+        warnings.append(f"{', '.join(thin_band)}: under half of their sales fall inside this budget, so the typical "
+                        "unit there costs more or less than you plan to spend. Check that the units you'd buy exist in band.")
     top3_expo = [o["project"] for o in options[:3] if o["master"].startswith("Expo")]
     if top3_expo:
         warnings.append(f"{len(top3_expo)} of the top 3 ({', '.join(top3_expo)}) are Expo City / Expo Living, "

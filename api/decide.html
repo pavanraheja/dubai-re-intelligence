@@ -133,6 +133,8 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const n = v => v == null ? "—" : Number(v).toLocaleString("en-US", {maximumFractionDigits: 1});
 const pc = v => v == null ? "—" : Math.round(v * 100) + "%";
+// shares from the stress test keep one decimal, so the page and the engine's warnings agree (48.5%, not 48 vs 49)
+const pc1 = v => v == null ? "—" : +(v * 100).toFixed(1) + "%";
 const title = s => esc(String(s).toLowerCase().replace(/\b\w/g, c => c.toUpperCase()));
 const LABEL = {demand: "Recent demand", persistence: "Demand persistence", depth: "Market depth",
                stability: "Price consistency", momentum: "Momentum (reliable)", value: "Entry value"};
@@ -181,7 +183,7 @@ function render(r) {
     <td>${title(o.project)}<span class="tag">${esc(o.master)}${o.launch_burst ? " · launch burst" : ""}</span></td>
     <td><span class="bar" style="width:${Math.max(4, o.score / top * 60)}px"></span>${o.score.toFixed(2)}</td>
     <td><span class="badge ${o.confidence}">${o.confidence}</span></td>
-    <td>${pc(o.p_first)}</td><td>${pc(o.p_top3)}</td>
+    <td>${pc1(o.p_first)}</td><td>${pc1(o.p_top3)}</td>
     <td>${n(o.demand)}</td><td>${n(o.median_price)}</td><td>${n(o.median_ppsf)}</td>
     <td>${o.momentum_point == null ? '<span class="muted">not enough sales</span>' : `${o.momentum_point > 0 ? "+" : ""}${o.momentum_point}% <span class="muted">(${o.momentum_ci[0]} to ${o.momentum_ci[1]})</span>`}</td>
     <td>${pc(o.offplan_share)}</td></tr>`).join("") ||
@@ -192,7 +194,7 @@ function render(r) {
 
   const lead = r.options[0];
   $("#holds").innerHTML = lead ? `
-    <div class="big">${pc(r.stress.leader_holds)}</div>
+    <div class="big">${pc1(r.stress.leader_holds)}</div>
     <p style="margin:2px 0 10px">of ${n(r.stress.draws)} plausible weightings put <b>${title(lead.project)}</b> first.</p>
     ${r.stress.flips.length ? `<p class="muted" style="margin:0 0 4px">Single changes that flip first place:</p><ul style="margin:0;padding-left:18px">` +
       r.stress.flips.map(f => `<li>${f.factor < 1 ? "Halving" : "Raising by half"} <b>${LABEL[f.criterion]}</b> → ${title(f.new_leader)}</li>`).join("") + `</ul>`
@@ -225,7 +227,7 @@ function detail(o) {
 function memo() {
   const r = last; if (!r) return;
   const w = Object.entries(r.frame.weights).map(([c, v]) => `${LABEL[c]} ${Math.round(v * 100)}%`).join(", ");
-  const top3 = r.options.slice(0, 3).map((o, i) => `  ${i + 1}. ${title(o.project)} — score ${o.score.toFixed(2)}, ${o.confidence}, first in ${pc(o.p_first)} of weightings`).join("\n");
+  const top3 = r.options.slice(0, 3).map((o, i) => `  ${i + 1}. ${title(o.project)} — score ${o.score.toFixed(2)}, ${o.confidence}, first in ${pc1(o.p_first)} of weightings`).join("\n");
   const [bmin, bmax] = r.frame.budget_aed;
   $("#memo").textContent =
 `DECISION MEMO — Dubai South allocation
@@ -236,7 +238,7 @@ Evidence: ${n(r.basis.rows)} registry sales, ${r.basis.from} to ${r.basis.to}, p
 
 Ranking under these criteria (the tool does not recommend):
 ${top3 || "  none"}
-Stability: the leader comes first in ${pc(r.stress.leader_holds)} of ${r.stress.draws} plausible weightings.
+Stability: the leader comes first in ${pc1(r.stress.leader_holds)} of ${r.stress.draws} plausible weightings.
 ${r.warnings.map(x => "! " + x).join("\n")}
 
 DECISION: ${$("#choice").value || "(not yet decided)"}

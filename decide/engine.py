@@ -202,7 +202,7 @@ def run(preset="demand_first", weights=None, budget=(1_000_000, 2_500_000), stag
                         f"{': ' + ', '.join(solid) if solid else ''}. Nine months of prices barely support "
                         "a growth thesis; weight momentum with that in mind.")
     if len(p_first) and p_first[0] < .6:
-        warnings.append(f"The leader comes first in only {p_first[0]:.0%} of plausible weightings: the ranking "
+        warnings.append(f"The leader comes first in only {round(float(p_first[0]) * 100, 1):g}% of plausible weightings: the ranking "
                         "at the top is not settled by the data. Decide on the gaps, not the score.")
     return {
         "frame": {"area": "Dubai South (registry: DUBAI SOUTH, EMAAR SOUTH, Madinat Al Mataar)",

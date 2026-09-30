@@ -16,16 +16,18 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Counted, not typed: the diagram must not drift from the repo.
 N_EVAL = sum(1 for f in glob.glob(os.path.join(ROOT, "evals", "questions_*.jsonl"))
              for line in open(f) if line.strip())
-N_TESTS = len(re.findall(r"^def test_", open(os.path.join(ROOT, "ask", "test_ask.py")).read(), re.M))
+N_TESTS = sum(len(re.findall(r"^def test_", open(f).read(), re.M))
+              for f in glob.glob(os.path.join(ROOT, "*", "test_*.py")))
 
-W, H = 1066, 600
+W, H = 1066, 750
 BW = 150                                   # box width
 COL = [52, 220, 388, 556, 724, 892]        # column x positions (gap 18)
 LANES = [  # (y, height, label)
     (30, 140, "DATA"),
     (185, 165, "ASK"),
     (365, 125, "LEARN"),
-    (505, 85, "NEXT"),
+    (505, 115, "DECIDE"),
+    (635, 105, "NEXT"),
 ]
 
 
@@ -64,7 +66,7 @@ def diagram(theme):
         f'aria-label="Architecture: real land-registry sales are pulled into a CSV; each question passes '
         f'a refusal gate before a planner that only picks a tool name, pandas computes every number, '
         f'and a confidence grade is attached; every question is logged, reviewed, and changes to the '
-        f'eval set pass a human gate before the next deploy.">')
+        f'eval set pass a human gate before the next deploy; in the decision workbench the person sets the criteria and makes the call, the engine only ranks and stress-tests.">')
     add('<defs>'
         f'<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
         f'orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="{ink}"/></marker>'
@@ -131,14 +133,30 @@ def diagram(theme):
     arrow([(c[2], 431), (c[1] + BW, 431)], "approved", c[2] - 9, 399, color=gate)
     arrow([(c[1], 431), (c[0] + BW, 431)], "must pass", c[1] - 9, 399)
     arrow([(c[0] + 70, y), (c[0] + 70, 353)], "ships", c[0] + 78, 382, "start")
-    arrow([(c[3] + 70, 457), (c[3] + 70, 505)], "refusal counts rank these", c[3] + 78, 484, "start")
+
+    # ── lane 4: decide (the person sets criteria and makes the call) ──
+    y = 540
+    box(c[0], y, "dubai_south.csv", "13,240 sales")
+    box(c[1], y, "YOU SET CRITERIA", "frame · weights", accent=True)
+    box(c[2], y, "decide/engine.py", "percentile scores")
+    box(c[3], y, "stress test", "2,000 weightings")
+    box(c[4], y, "gaps + warnings", "what data can't say")
+    box(c[5], y, "YOU DECIDE", "memo · reversal criteria", accent=True)
+    arrow([(c[0] + BW, 566), (c[1], 566)], "options", c[1] - 9, 534)
+    arrow([(c[1] + BW, 566), (c[2], 566)], "weights", c[2] - 9, 534, color=gate)
+    arrow([(c[2] + BW, 566), (c[3], 566)], "ranking", c[3] - 9, 534)
+    arrow([(c[3] + BW, 566), (c[4], 566)], "how settled", c[4] - 9, 534)
+    arrow([(c[4] + BW, 566), (c[5], 566)], "evidence", c[5] - 9, 534)
+    add(f'<text x="{c[4] + 88}" y="160" font-size="11" fill="{muted}">+ Dubai South extract → DECIDE</text>')
 
     # ── lane 4: roadmap (dashed = not built) ──
     nxt = [("nightly DLD pull", "fresh data, auto"), ("historic archive", "makes YoY answerable"),
            ("supply source", "completions, unsold"), ("LLM planner", "benchmark, ~$0.11/100 Qs"),
            ("loop on a schedule", "weekly roadmap report")]
     for i, (t, s) in enumerate(nxt):
-        box(52 + i * 202, 533, t, s, w=184, h=48, dashed=True)
+        box(52 + i * 202, 668, t, s, w=184, h=48, dashed=True)
+    add(f'<text x="52" y="655" font-size="11" fill="{muted}">ranked by refusal counts from LEARN and by the '
+        f'prioritisation rules in PRODUCT.md</text>')
 
     add('</svg>')
     return "\n".join(o)

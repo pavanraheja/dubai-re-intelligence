@@ -11,6 +11,28 @@ An investment committee choosing where the next allocation goes: **Emaar South o
 
 So the product is narrow on purpose: two communities, every number carrying its basis, and explicit refusals where the data cannot support the question.
 
+## The decision it supports: where to allocate in Dubai South
+Answering questions is not the job; making a decision is. The workbench at [/decide](https://dubai-re-intelligence-seven.vercel.app/decide) frames one: *AED X to deploy in Dubai South this quarter, at a given ticket size — which projects, and why?*
+
+**The tool never picks.** The person deciding sets the criteria and how much each matters; the tool ranks projects on registry evidence, stress-tests how settled that ranking is, and lists what the data cannot tell you. A person makes the call and writes down why, and what would change their mind. Stakeholders define the scoring formula; the tool makes its consequences visible.
+
+| Step | What happens | Who |
+|---|---|---|
+| 1. Frame | ticket size, stage (off-plan / ready), whether Expo City counts as the mandate | person |
+| 2. Options | every project group with 30+ sales; thinner ones listed with the reason, never ranked | tool |
+| 3. Criteria | recent demand, demand persistence, market depth, price consistency, reliable momentum, entry value | tool computes |
+| 4. Weights | presets (demand first, capital growth, entry value) or custom | person |
+| 5. Rank | percentile score per criterion, weighted; confidence per project | tool |
+| 6. Stress test | 2,000 weightings resampled around the chosen ones: how often each project comes first; which single weight change flips the leader | tool |
+| 7. Gaps | per project: exit liquidity, yield, handover, developer record, payment plan, unsold stock | tool lists, person verifies |
+| 8. Decide | choice, rationale, reversal criteria → a copyable memo | person |
+
+**What the data taught us before any ranking:**
+- **94% of 2026 Dubai South sales are first sales from developers; resales are 0.7%.** Exit liquidity cannot be measured yet, so the default preset is labelled honestly: *demand first, as a proxy for liquidity*, and "exit liquidity" is the first gap on every project.
+- **Launch bursts look like demand.** Golf Fields sold all 181 units in one month, so demand *persistence* is a criterion and launch-only projects get LOW confidence.
+- **Momentum is mostly noise over nine months.** Only one project (South Square) has a Q1 → Q3 interval above zero, so momentum is scored on the lower end of its 90% interval and the growth preset says how little it can rely on.
+- **Under "demand first", the top is a coin flip:** the leader comes first in about half of plausible weightings. The tool says so, and the memo tells the committee to decide on the gaps, not the score. Excluding Expo City from the mandate makes Windsor House lead in every weighting.
+
 ## From committee questions to requirements
 | What the committee actually asked | Requirement it became |
 |---|---|
@@ -75,6 +97,7 @@ Privacy: no IP or identifying data is logged, and visitors' questions are never 
 | 27 Sep 2026 | Add advice and unknown-area refusals, and an independent eval set | Baseline eval: 21 questions answered that should have been refused |
 | 27 Sep 2026 | Dashboard: "BUY / SELL" signals renamed to momentum labels; rental yields labelled MODELLED | The same product cannot refuse advice in one screen and give it in the next. Rents are hard-coded 2025 estimates, not registry data |
 | 27 Sep 2026 | Add a one-community snapshot, notable deals, project and off-plan splits; refusals suggest answerable questions | First live session: the hand-typed question got a generic table, and refusals read as failures. Everyday set 18/30 → 30/30 |
+| 30 Sep 2026 | Reframe from answering questions to supporting a decision: the Dubai South workbench | A question tool shows evidence; a committee needs a decision with its trade-offs visible. The tool ranks under the person's criteria and never picks; the data forced two honest relabels (liquidity → demand proxy; momentum → lower bound) |
 | 28 Sep 2026 | One chart per community for "both" trends, each on its own scale | Third live session: "price trend in both, but show me both". Routing was right, but on a shared axis Emaar South's +2.2% flattened into a straight line under Creek Harbour. The loop now flags a rephrase that gets the same answer as a presentation miss, a failure class the eval sets cannot see |
 | 28 Sep 2026 | Build the learning loop: log outcomes, flag rephrase chains, map refusals to roadmap, propose eval candidates; human approves every change | Both live bugs were found by a person noticing a rephrase. That should not depend on someone watching |
 | 28 Sep 2026 | Never pool the two communities; trends in "both" are shown side by side | Second live session: "price trend in both" returned one pooled line (−1.6%, HIGH confidence) while the two communities actually moved in opposite directions (−2.1% and +2.2%). Real-user set 5/7 → 7/7 |
@@ -93,7 +116,7 @@ Five rules decide the order, and they matter more than the scores:
 | Item | Trust | Demand | Value | Cost | Estimate | Decision |
 |---|---|---|---|---|---|---|
 | Numeric-accuracy tests: reconcile answers against an independent calculation. The eval sets check routing and refusals, not that a median is right | 3 | 1 | 2 | 1 | ~½ day, $0 | **Now** (rule 1) |
-| Robust trend: Q1 vs Q3 medians with a bootstrap interval, instead of January vs September | 3 | 1 | 2 | 1 | ~½ day, $0 | **Now** (rule 1) |
+| Robust trend: Q1 vs Q3 medians with a bootstrap interval, instead of January vs September | 3 | 1 | 2 | 1 | ~½ day, $0 | **Done in the workbench** (30 Sep); still to apply to the Q&A trend view |
 | Learning loop on a schedule, so no logs are lost | 2 | – | 1 | 1 | ~1–2 hours, $0 | **Now** (rule 2) |
 | LLM planner benchmarked on all eval questions (135 today), as a constrained classifier with a versioned prompt | 2 | 2 | 2 | 2 | ~1 day; about $0.11 per 100 questions on Claude Sonnet 5, $0.06 on Claude Haiku 4.5 (list prices, ~400 in / 30 out tokens, excluding thinking); needs an API key | **Next**, ships only if missed refusals stay 0 |
 | Nightly data pull and redeploy | 2 | 0 | 2 | 1 | ~½ day, $0 on free tiers | **Next** |

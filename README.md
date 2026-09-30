@@ -4,6 +4,8 @@ Ask Dubai property-sales data a question in plain English. The answer comes back
 
 **▶ Live: [dubai-re-intelligence-seven.vercel.app](https://dubai-re-intelligence-seven.vercel.app)** · real Dubai Land Department sales, Jan–Sep 2026 · no login, no API key
 
+**▶ Decide:** [the Dubai South decision workbench](https://dubai-re-intelligence-seven.vercel.app/decide): you set the criteria, it ranks 30+ projects on 13,240 real sales, stress-tests the ranking and lists what the data can't tell you. It never picks.
+
 **Product thinking:** [PRODUCT.md](PRODUCT.md) covers the decision it serves, requirements, the evidence contract, what was cut, how it is measured, the decision log and what's next.
 
 Built by Pavan Raheja while leading investment and strategy at Dash Capital (Dubai) — **[see my work & get in touch → pavan.blog/work](https://www.pavan.blog/work?utm_source=github&utm_medium=readme&utm_campaign=dubai-re-intelligence)**.
@@ -16,7 +18,7 @@ Built by Pavan Raheja while leading investment and strategy at Dash Capital (Dub
 | **Answers** | Seven pandas tools: one-community snapshot, compare communities, monthly price and volume trend (one community, or both side by side, never pooled), breakdown (bedrooms, property type, off-plan vs ready, project), notable deals (latest or largest), data coverage |
 | **Refuses** | Forward-looking, causal, advice, out-of-scope, supply/absorption, and areas outside the extract |
 | **Measured** | 135 labelled questions in five sets, 9 of them typed on the live site. **First contact on 40 independently written questions: 34/40 (85%). On 30 everyday questions: 18/30 (60%)**, with no wrong refusals but 12 wrong views. After fixes all sets pass (tuned) · 0 missed refusals |
-| **Tests** | 15 unit tests on refusal and evidence behaviour |
+| **Tests** | 15 unit tests on refusal and evidence behaviour · 11 on the decision engine |
 
 ## Architecture
 
@@ -34,6 +36,8 @@ python ask.py --demo                # the full question set, including the ones 
 python evals/run_eval.py            # score every labelled question
 python ask/test_ask.py              # 15 unit tests
 python pipeline/fetch_dld.py        # re-pull the real data (1 Jan this year → today)
+python pipeline/fetch_dubai_south.py  # project-level Dubai South extract for the workbench
+python decide/test_decide.py        # 11 tests: thin projects never ranked, budget, stress, gaps
 python insights/review.py           # read live logs → rephrase chains, refusal demand, eval candidates
 ```
 
@@ -95,6 +99,12 @@ Every threshold is a named constant in `ask/evidence.py`, so the rules are argua
 - `questions_everyday_v1.jsonl`: the **first question typed on the live site** ("what is going on with Dubai creek harbor", which got a generic table) plus 30 everyday phrasings. **Baseline: 18/30.** Nothing was wrongly refused, but 12 went to the wrong view, which feels like a refusal to the person asking. Now 30/30 after adding a community snapshot, notable deals, project and off-plan splits, and spelling tolerance.
 - **Second live session (28 Sep):** "price trend in both" returned a single pooled line at HIGH confidence. Pooling hid that the two communities moved in opposite directions. The planner now never pools them, and a regression test enforces it.
 - The error that matters is the **missed refusal**, a confident number that should not exist. It is reported separately from over-refusal.
+
+## `decide/` — the decision workbench
+
+`/decide` frames an allocation decision in Dubai South (budget, stage, whether Expo City is in the mandate), lets the decision-maker set criteria weights, and returns a ranking with, for every project, its evidence, confidence, how often it comes first across 2,000 resampled weightings, and the gaps the sales data cannot fill. The person picks and writes a memo with reversal criteria.
+
+The data forced two honest relabels: 94% of 2026 sales are developer first-sales and resales are 0.7%, so "liquidity" is really *demand, as a proxy*; and nine months of prices make momentum mostly noise, so it is scored on the lower end of its 90% interval. See [PRODUCT.md](PRODUCT.md#the-decision-it-supports-where-to-allocate-in-dubai-south).
 
 ## `insights/` — the learning loop
 

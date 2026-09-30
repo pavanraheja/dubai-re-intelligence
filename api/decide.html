@@ -4,260 +4,241 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dubai South Decision Workbench</title>
-<meta name="description" content="Rank Dubai South projects under criteria you set. The tool shows the evidence, how fragile the ranking is, and what the data cannot tell you. It never picks.">
+<meta name="description" content="Tell it what you're deciding in Dubai South. It shows the evidence, how settled the answer is, and what to verify. It never picks.">
 <style>
-:root{--bg:#f7f7f5;--card:#fff;--ink:#16181d;--muted:#5d6470;--line:#e3e4e8;--accent:#0f6e66;--soft:#eef0f2;
---refuse-bg:#fdecec;--refuse-ink:#9b1c1c;--warn-bg:#fff6e0;--warn-ink:#7a5200;--ok-bg:#e7f5f2;--ok-ink:#0f6e66;--on-accent:#fff;--bar:#b9dcd7}
-@media (prefers-color-scheme:dark){:root{--bg:#111316;--card:#1a1d22;--ink:#e8eaed;--muted:#9aa1ab;--line:#2c3037;--accent:#4fc1b4;--soft:#252a31;
---refuse-bg:#3a1a1a;--refuse-ink:#ffb4b4;--warn-bg:#352a10;--warn-ink:#f3d28a;--ok-bg:#12302c;--ok-ink:#7fdccf;--on-accent:#0b1f1c;--bar:#1f4c46}}
+:root{--bg:#f7f7f5;--card:#fff;--ink:#16181d;--muted:#5d6470;--line:#e3e4e8;--accent:#0f6e66;--soft:#eef0f2;--me:#e3f1ef;
+--refuse-bg:#fdecec;--refuse-ink:#9b1c1c;--warn-bg:#fff6e0;--warn-ink:#7a5200;--ok-bg:#e7f5f2;--ok-ink:#0f6e66;--on-accent:#fff;
+--settled:#0f6e66;--leaning:#8a6a00;--contested:#a33a1b}
+@media (prefers-color-scheme:dark){:root{--bg:#111316;--card:#1a1d22;--ink:#e8eaed;--muted:#9aa1ab;--line:#2c3037;--accent:#4fc1b4;--soft:#252a31;--me:#15302c;
+--refuse-bg:#3a1a1a;--refuse-ink:#ffb4b4;--warn-bg:#352a10;--warn-ink:#f3d28a;--ok-bg:#12302c;--ok-ink:#7fdccf;--on-accent:#0b1f1c;
+--settled:#7fdccf;--leaning:#f3d28a;--contested:#ff9f8a}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif}
-main{max-width:1040px;margin:0 auto;padding:28px 16px 64px}
+main{max-width:1180px;margin:0 auto;padding:22px 16px 48px}
 a{color:var(--accent)}
-h1{font-size:24px;line-height:1.25;margin:0 0 6px}
-h2{font-size:17px;margin:0 0 10px}
-.sub{color:var(--muted);margin:0 0 14px;max-width:70ch}
-.basis{font-size:13px;color:var(--muted);border-left:3px solid var(--accent);padding:2px 0 2px 10px;margin-bottom:18px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:14px}
-.row{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:end}
-label{font-size:12px;color:var(--muted);display:grid;gap:4px}
-select,input[type=number]{font:inherit;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
-.presets{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 12px}
-.presets button{font:inherit;font-size:14px;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--soft);color:var(--ink);cursor:pointer}
-.presets button.on{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
-.sliders{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px 22px}
-.sl{display:grid;grid-template-columns:1fr 36px;gap:2px 8px;align-items:center;font-size:13px}
-.sl span{color:var(--muted);font-variant-numeric:tabular-nums;text-align:right}
-.sl input{grid-column:1/-1;width:100%;accent-color:var(--accent)}
-.warn{background:var(--warn-bg);color:var(--warn-ink);border-radius:10px;padding:9px 12px;margin-bottom:8px;font-size:14px}
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 16px;font-size:14px;margin-bottom:8px}
+h1{font-size:23px;line-height:1.25;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 10px;max-width:72ch}
+.basis{font-size:13px;color:var(--muted);border-left:3px solid var(--accent);padding:2px 0 2px 10px;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:16px;align-items:start}
+@media (max-width:860px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+/* conversation */
+.chat{display:flex;flex-direction:column;min-height:560px}
+.thread{flex:1;display:flex;flex-direction:column;gap:12px;overflow-y:auto;max-height:62vh;padding-right:4px}
+.msg{max-width:92%;padding:10px 13px;border-radius:14px;white-space:pre-wrap}
+.msg.me{align-self:flex-end;background:var(--me);border-bottom-right-radius:4px}
+.msg.wb{align-self:flex-start;background:var(--soft);border-bottom-left-radius:4px}
+.msg .who{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
+.chip{font:inherit;font-size:13px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.chip:hover,.chip:focus-visible{border-color:var(--accent);outline:none}
+form{display:flex;gap:8px;margin-top:12px}
+textarea{flex:1;min-width:0;font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);resize:none;height:46px}
+textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+button.send{font:inherit;font-weight:600;padding:0 16px;border:0;border-radius:12px;background:var(--accent);color:var(--on-accent);cursor:pointer}
+/* brief */
+.brief{position:sticky;top:12px}
+.frame{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.tag{font-size:12px;padding:3px 9px;border-radius:999px;background:var(--soft);color:var(--ink)}
+.tag.assumed{border:1px dashed var(--muted)}
+.status{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.status b.word{font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.settled{color:var(--settled)}.leaning{color:var(--leaning)}.contested{color:var(--contested)}
+.leader{font-size:26px;font-weight:700;margin:2px 0 2px;line-height:1.2}
+.meter{height:8px;border-radius:4px;background:var(--soft);overflow:hidden;margin:6px 0 4px}
+.meter span{display:block;height:100%}
+h3{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:16px 0 6px}
+ul{margin:0;padding-left:18px}li{margin-bottom:3px}
+.note{background:var(--ok-bg);color:var(--ok-ink);border-radius:10px;padding:8px 11px;margin-top:10px;font-size:14px}
+.warn{background:var(--warn-bg);color:var(--warn-ink);border-radius:10px;padding:8px 11px;margin-top:8px;font-size:13.5px}
+.refuse{background:var(--refuse-bg);color:var(--refuse-ink);border-radius:10px;padding:8px 11px;margin-bottom:10px;font-size:14px}
 .scroll{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:14px}
-th,td{text-align:right;padding:8px;border-bottom:1px solid var(--line);white-space:nowrap;font-variant-numeric:tabular-nums}
-th:nth-child(2),td:nth-child(2){text-align:left}
-th{font-weight:600;color:var(--muted);font-size:12px}
-tbody tr{cursor:pointer}
-tbody tr:hover td,tbody tr.sel td{background:var(--soft)}
-.tag{font-size:11px;color:var(--muted);display:block}
-.badge{display:inline-block;padding:1px 7px;border-radius:6px;font-weight:700;font-size:11px}
-.HIGH{background:var(--ok-bg);color:var(--ok-ink)}.MEDIUM,.LOW{background:var(--warn-bg);color:var(--warn-ink)}
-.bar{display:inline-block;height:8px;border-radius:4px;background:var(--accent);vertical-align:middle;margin-right:6px}
-.hold{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-.big{font-size:28px;font-weight:700}
-.muted{color:var(--muted)}
-ul.gaps{margin:6px 0 0;padding-left:0;list-style:none;display:grid;gap:6px}
-ul.gaps li{display:flex;gap:8px;align-items:flex-start;font-size:14px}
-textarea{width:100%;min-height:70px;font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
-.memo{white-space:pre-wrap;font:13px/1.5 ui-monospace,Menlo,monospace;background:var(--soft);border-radius:10px;padding:12px;max-height:340px;overflow:auto}
-button.copy{font:inherit;font-weight:600;padding:9px 14px;border:0;border-radius:10px;background:var(--accent);color:var(--on-accent);cursor:pointer;margin-top:8px}
-details summary{cursor:pointer;color:var(--muted)}
-.nav{font-size:14px;margin-bottom:10px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{padding:6px 7px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left}
+th{font-size:11.5px;color:var(--muted);font-weight:600}
+td small{display:block;color:var(--muted);font-size:11px}
+.verify li{list-style:none;margin-left:-18px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.actions button,.actions a{font:inherit;font-size:14px;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;text-decoration:none}
+.memo{white-space:pre-wrap;font:12.5px/1.5 ui-monospace,Menlo,monospace;background:var(--soft);border-radius:10px;padding:10px;max-height:300px;overflow:auto;margin-top:8px}
+label{font-size:12px;color:var(--muted);display:grid;gap:4px;margin-top:8px}
+select,input.t{font:inherit;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+.writer{font-size:11.5px;color:var(--muted);margin-top:12px}
+.empty{color:var(--muted)}
 </style>
 </head>
 <body>
 <main>
-  <div class="nav"><a href="/">← Ask the data</a></div>
+  <div class="top"><a href="/">← Ask the data</a><a id="evlink" href="/decide/evidence">Evidence view: full table and sliders →</a></div>
   <h1>Dubai South decision workbench</h1>
-  <p class="sub">You set the criteria and how much each matters. The tool ranks projects on registry evidence, shows how fragile that ranking is, and lists what the data cannot tell you. <b>It never picks. You decide, and write down why.</b></p>
-  <div class="basis" id="basis">Loading…</div>
+  <p class="sub">Tell me what you're deciding, in your own words: budget, what matters, what's out of bounds. I show the evidence, how settled the answer is, and what to verify before money moves. <b>I never pick. You decide.</b></p>
+  <div class="basis" id="basis">Loading data basis…</div>
 
-  <div class="card">
-    <h2>1 · Frame the decision</h2>
-    <div class="row">
-      <label for="bmin">Budget from (AED millions)
-        <input type="number" id="bmin" value="1" min="0" max="50" step="0.5" style="width:110px"></label>
-      <label for="bmax">to (AED millions)
-        <input type="number" id="bmax" value="2.5" min="0.5" max="50" step="0.5" style="width:110px"></label>
-      <label for="stage">Stage
-        <select id="stage">
-          <option value="all">Off-plan and ready</option>
-          <option value="offplan">Off-plan only</option>
-          <option value="ready">Ready only</option>
-        </select></label>
-      <label for="expo">Expo City / Expo Living
-        <select id="expo">
-          <option value="1">Include (same registry area)</option>
-          <option value="0">Exclude (separate master developer)</option>
-        </select></label>
-    </div>
-  </div>
+  <div class="grid">
+    <section class="card chat" aria-label="Conversation">
+      <div class="thread" id="thread" aria-live="polite">
+        <div class="msg wb"><span class="who">Workbench</span>What are you deciding? For example: "I have 1–2M and want steady demand", or "4–5M, I need to be able to sell in 3 years, leave Expo out".</div>
+      </div>
+      <div class="chips" id="chips"></div>
+      <form id="f">
+        <textarea id="q" rows="1" placeholder="Budget, priorities, anything out of bounds…" aria-label="Your message"></textarea>
+        <button class="send" type="submit">Send</button>
+      </form>
+    </section>
 
-  <div class="card">
-    <h2>2 · Set what matters</h2>
-    <div class="presets" id="presets"></div>
-    <div class="sliders" id="sliders"></div>
-  </div>
-
-  <div id="warnings"></div>
-
-  <div class="card">
-    <h2>3 · Ranking under your criteria</h2>
-    <div class="scroll"><table>
-      <thead><tr><th>#</th><th>Project</th><th>Score</th><th>Conf.</th><th>1st in</th><th>Top 3 in</th><th>Sales/mo (Jul–Sep)</th><th>Median price</th><th>AED/sqft</th><th>Momentum Q1→Q3</th><th>Off-plan</th></tr></thead>
-      <tbody id="rank"></tbody>
-    </table></div>
-    <p class="muted" style="font-size:13px;margin:8px 0 0">"1st in" = share of 2,000 plausible weightings, resampled around yours, in which the project comes first. Momentum shows the point estimate and the 90% interval; it is scored on the lower end. Click a row for its evidence and gaps.</p>
-  </div>
-
-  <div class="hold">
-    <div class="card">
-      <h2>4 · How settled is the top?</h2>
-      <div id="holds"></div>
-    </div>
-    <div class="card" id="detail"><h2>Project evidence</h2><p class="muted">Click a project in the ranking.</p></div>
-  </div>
-
-  <div class="card">
-    <h2>5 · Decide and write it down</h2>
-    <div class="row" style="align-items:stretch">
-      <label for="choice" style="flex:1 1 220px">Your choice
-        <select id="choice"></select></label>
-    </div>
-    <div class="row" style="margin-top:10px;align-items:stretch">
-      <label for="why" style="flex:1 1 300px">Why (in your words)<textarea id="why" placeholder="e.g. Most persistent demand in budget; accept the launch-price risk"></textarea></label>
-      <label for="kill" style="flex:1 1 300px">What would change our mind<textarea id="kill" placeholder="e.g. monthly sales fall below 5 for two months; handover slips past Q4 2028"></textarea></label>
-    </div>
-    <p class="muted" style="font-size:13px;margin:12px 0 4px">Decision memo (updates as you go):</p>
-    <div class="memo" id="memo"></div>
-    <button class="copy" id="copy">Copy memo</button> <span id="copied" class="muted"></span>
-  </div>
-
-  <div class="card">
-    <details><summary id="exsum">Projects not ranked</summary><div class="scroll" id="excluded"></div></details>
+    <section class="card brief" id="brief" aria-label="Decision brief">
+      <h3 style="margin-top:0">Decision brief</h3>
+      <p class="empty">The brief builds here as you talk: the frame, how settled the answer is, why, the trade-offs, the finalists, and what to verify.</p>
+    </section>
   </div>
 </main>
 <script>
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const n = v => v == null ? "—" : Number(v).toLocaleString("en-US", {maximumFractionDigits: 1});
-const pc = v => v == null ? "—" : Math.round(v * 100) + "%";
-// shares from the stress test keep one decimal, so the page and the engine's warnings agree (48.5%, not 48 vs 49)
-const pc1 = v => v == null ? "—" : +(v * 100).toFixed(1) + "%";
-const title = s => esc(String(s).toLowerCase().replace(/\b\w/g, c => c.toUpperCase()));
-const LABEL = {demand: "Recent demand", persistence: "Demand persistence", depth: "Market depth",
-               stability: "Price consistency", momentum: "Momentum (reliable)", value: "Entry value"};
-let META, weights = {}, preset = "demand_first", last = null, selected = null, seq = 0;
+let state = {}, previous = null, last = null, busy = false;
+const STARTERS = ["I have 1–2M, which projects?", "4–5M, I need to be able to sell in 3 years, leave Expo out",
+                  "Under 2M, best entry value", "What can't this data tell me?"];
 
-function sliders() {
-  $("#sliders").innerHTML = Object.keys(META.criteria).map(c => `
-    <div class="sl" title="${esc(META.criteria[c])}"><label for="w_${c}" style="font-size:13px;color:var(--ink)">${LABEL[c]}</label>
-      <span id="v_${c}">${Math.round((weights[c] || 0) * 100)}</span>
-      <input type="range" id="w_${c}" min="0" max="100" value="${Math.round((weights[c] || 0) * 100)}"></div>`).join("");
-  Object.keys(META.criteria).forEach(c => $("#w_" + c).addEventListener("input", e => {
-    weights[c] = e.target.value / 100; $("#v_" + c).textContent = e.target.value;
-    preset = "custom"; paintPresets(); schedule();
-  }));
-}
-function paintPresets() {
-  $("#presets").innerHTML = Object.entries(META.presets).map(([k, p]) =>
-    `<button data-p="${k}" class="${k === preset ? "on" : ""}">${esc(p.label)}</button>`).join("") +
-    (preset === "custom" ? `<button class="on">Custom</button>` : "");
-  document.querySelectorAll("#presets button[data-p]").forEach(b => b.addEventListener("click", () => {
-    preset = b.dataset.p; weights = {...META.presets[preset].weights}; sliders(); paintPresets(); schedule();
-  }));
-}
-let timer;
-function schedule() { clearTimeout(timer); timer = setTimeout(load, 250); }
-
-async function load() {
-  // a budget someone actually has (e.g. 4–5M) rather than a fixed band; found when asked "what if 4–5M?"
-  const bmin = Math.round(parseFloat($("#bmin").value || 0) * 1e6), bmax = Math.round(parseFloat($("#bmax").value || 50) * 1e6);
-  const q = new URLSearchParams({budget_min: bmin, budget_max: bmax, stage: $("#stage").value, expo: $("#expo").value});
-  if (preset === "custom") Object.entries(weights).forEach(([c, v]) => v > 0 && q.set("w_" + c, v));
-  else q.set("preset", preset);
-  const mine = ++seq;
-  $("#rank").innerHTML = `<tr><td colspan="11" class="muted" style="text-align:left">Ranking…</td></tr>`;
-  const r = await (await fetch("/api/decide?" + q)).json();
-  if (mine !== seq) return;
-  last = r; render(r);
-}
-
-function render(r) {
+fetch("/api/decide").then(r => r.json()).then(r => {
   const b = r.basis;
-  $("#basis").innerHTML = `<b>${n(b.rows)}</b> sales · ${esc(b.from)} → ${esc(b.to)} · ${esc(b.source)} · pulled ${esc(b.pulled)} · ${esc(r.frame.area)}`;
-  $("#warnings").innerHTML = r.warnings.map(w => `<div class="warn">${esc(w)}</div>`).join("");
-  const top = r.options.length ? r.options[0].score : 1;
-  $("#rank").innerHTML = r.options.map((o, i) => `<tr data-i="${i}" class="${selected === o.project ? "sel" : ""}">
-    <td>${i + 1}</td>
-    <td>${title(o.project)}<span class="tag">${esc(o.master)}${o.launch_burst ? " · launch burst" : ""}</span></td>
-    <td><span class="bar" style="width:${Math.max(4, o.score / top * 60)}px"></span>${o.score.toFixed(2)}</td>
-    <td><span class="badge ${o.confidence}">${o.confidence}</span></td>
-    <td>${pc1(o.p_first)}</td><td>${pc1(o.p_top3)}</td>
-    <td>${n(o.demand)}</td><td>${n(o.median_price)}</td><td>${n(o.median_ppsf)}</td>
-    <td>${o.momentum_point == null ? '<span class="muted">not enough sales</span>' : `${o.momentum_point > 0 ? "+" : ""}${o.momentum_point}% <span class="muted">(${o.momentum_ci[0]} to ${o.momentum_ci[1]})</span>`}</td>
-    <td>${pc(o.offplan_share)}</td></tr>`).join("") ||
-    `<tr><td colspan="11" class="muted" style="text-align:left">No project passes the frame. Widen the budget or the stage.</td></tr>`;
-  document.querySelectorAll("#rank tr[data-i]").forEach(tr => tr.addEventListener("click", () => {
-    selected = r.options[tr.dataset.i].project; detail(r.options[tr.dataset.i]); render(r);
-  }));
+  $("#basis").innerHTML = `<b>${Number(b.rows).toLocaleString()}</b> real sales · ${esc(b.from)} → ${esc(b.to)} · ${esc(b.source)} · pulled ${esc(b.pulled)} · Dubai South (registry: DUBAI SOUTH, EMAAR SOUTH, Madinat Al Mataar)`;
+});
+chips(STARTERS);
 
-  const lead = r.options[0];
-  $("#holds").innerHTML = lead ? `
-    <div class="big">${pc1(r.stress.leader_holds)}</div>
-    <p style="margin:2px 0 10px">of ${n(r.stress.draws)} plausible weightings put <b>${title(lead.project)}</b> first.</p>
-    ${r.stress.flips.length ? `<p class="muted" style="margin:0 0 4px">Single changes that flip first place:</p><ul style="margin:0;padding-left:18px">` +
-      r.stress.flips.map(f => `<li>${f.factor < 1 ? "Halving" : "Raising by half"} <b>${LABEL[f.criterion]}</b> → ${title(f.new_leader)}</li>`).join("") + `</ul>`
-      : `<p class="muted">No single ×0.5 or ×1.5 change to one weight changes first place.</p>`}` : "";
-
-  $("#choice").innerHTML = `<option value="">— not decided —</option>` +
-    r.options.slice(0, 10).map(o => `<option>${title(o.project)}</option>`).join("");
-  $("#exsum").textContent = `Projects not ranked (${r.excluded.length}), and why`;
-  $("#excluded").innerHTML = `<table><thead><tr><th></th><th>Project</th><th>Sales</th><th style="text-align:left">Reason</th></tr></thead><tbody>` +
-    r.excluded.map(x => `<tr><td></td><td>${title(x.project)}</td><td>${n(x.sales)}</td><td style="text-align:left;white-space:normal">${esc(x.excluded_because.join("; "))}</td></tr>`).join("") + `</tbody></table>`;
-  if (selected) { const o = r.options.find(o => o.project === selected); if (o) detail(o); }
-  memo();
+function chips(list) {
+  $("#chips").innerHTML = list.map(c => `<button class="chip" type="button">${esc(c)}</button>`).join("");
+  document.querySelectorAll("#chips .chip").forEach(b => b.addEventListener("click", () => send(b.textContent)));
+}
+function bubble(who, text) {
+  const d = document.createElement("div");
+  d.className = "msg " + (who === "me" ? "me" : "wb");
+  d.innerHTML = `<span class="who">${who === "me" ? "You" : "Workbench"}</span>${esc(text)}`;
+  $("#thread").appendChild(d); $("#thread").scrollTop = $("#thread").scrollHeight;
+  return d;
 }
 
-function detail(o) {
-  $("#detail").innerHTML = `<h2>${title(o.project)} <span class="badge ${o.confidence}">${o.confidence}</span></h2>
-    <p class="muted" style="margin:0 0 8px">${esc(o.master)} · ${n(o.sales)} sales · ${o.phases} phase(s) · first sale ${esc(o.first_sale)} · active ${o.months_active} months</p>
-    <table><tbody>
-      <tr><td style="text-align:left">Recent demand</td><td>${n(o.demand)} sales/mo</td></tr>
-      <tr><td style="text-align:left">Demand persistence</td><td>${pc(o.persistence)} outside the busiest month</td></tr>
-      <tr><td style="text-align:left">Price consistency</td><td>${pc(o.stability)}</td></tr>
-      <tr><td style="text-align:left">Entry value</td><td>${o.value}× Dubai South median AED/sqft</td></tr>
-      <tr><td style="text-align:left">Inside your budget</td><td>${pc(o.in_budget_share)} of sales</td></tr>
-      <tr><td style="text-align:left">Resales</td><td>${pc(o.resale_share)} of sales</td></tr>
-    </tbody></table>
-    <p style="margin:12px 0 0"><b>Verify before committing</b> <span class="muted">(not in sales data)</span></p>
-    <ul class="gaps">${o.gaps.map((g, i) => `<li><input type="checkbox" id="g${i}" aria-label="checked"><label for="g${i}" style="font-size:14px;color:var(--ink)">${esc(g)}</label></li>`).join("")}</ul>`;
+async function send(text) {
+  text = (text || "").trim();
+  if (!text || busy) return;
+  if (/what can'?t this data tell me/i.test(text)) {
+    bubble("me", text);
+    bubble("wb", "Sales records can't show: how easily a unit resells (resales are 0.7% of 2026 Dubai South sales), rental yield, handover dates and construction progress, the developer's delivery record, payment plans and service charges, or how much stock is unsold. Those stay on the verify list for every project. What I can show is buyer demand, how steady it is, price levels, price consistency, and price movement over nine months.");
+    return;
+  }
+  busy = true; bubble("me", text); $("#q").value = "";
+  const pending = bubble("wb", "Working through the evidence…");
+  try {
+    const r = await (await fetch("/api/converse", {method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({message: text, state, previous})})).json();
+    if (r.error) { pending.lastChild.textContent = r.error; return; }
+    state = r.state; const b = r.brief; last = b;
+    pending.lastChild.textContent = b.reply;
+    if (b.leader) previous = {leader: b.leader.project, holds: b.holds, frame: b.frame};
+    render(b); chips(b.suggestions || STARTERS);
+  } catch (e) { pending.lastChild.textContent = "Couldn't reach the workbench. Try again in a moment."; }
+  finally { busy = false; }
+}
+
+function evidenceLink(b) {
+  const f = state.frame || {}; const q = new URLSearchParams();
+  if (f.budget) { q.set("bmin", f.budget[0] / 1e6); q.set("bmax", f.budget[1] / 1e6); }
+  if (f.stage) q.set("stage", f.stage);
+  q.set("expo", f.include_expo === false ? "0" : "1");
+  Object.entries(b.weights || {}).forEach(([k, v]) => q.set("w_" + k, v));
+  return "/decide/evidence?" + q;
+}
+
+function render(b) {
+  $("#evlink").href = evidenceLink(b);
+  const f = b.frame;
+  let h = `<h3 style="margin-top:0">Decision brief</h3>
+    <div class="frame"><span class="tag">AED ${esc(f.budget[0])}–${esc(f.budget[1])}</span>
+      <span class="tag">${f.stage === "offplan" ? "Off-plan only" : f.stage === "ready" ? "Ready only" : "Any stage"}</span>
+      <span class="tag">Expo City ${f.include_expo ? "in" : "out"}</span>
+      ${f.priorities.map(p => `<span class="tag ${f.assumed_priority ? "assumed" : ""}" title="${f.assumed_priority ? "Assumed; tell me what matters" : ""}">${esc(p)}</span>`).join("")}</div>`;
+  for (const n of b.notes || []) h += `<div class="refuse">${esc(n)}</div>`;
+  if (b.status === "none") {
+    $("#brief").innerHTML = h + `<p>No project passes this frame. Widen the budget or the stage.</p>`; return;
+  }
+  const holds = parseFloat(b.holds);
+  const word = {settled: "Settled by the data", leaning: "Leaning", contested: "Not settled by the data"}[b.status];
+  h += `<div class="status"><b class="word ${b.status}">${word}</b><span class="muted" style="color:var(--muted);font-size:13px">first in ${esc(b.holds)} of 2,000 scenarios</span></div>
+    <div class="leader">${esc(b.leader.project)}</div>
+    <div class="meter" aria-hidden="true"><span class="${b.status}" style="width:${holds}%;background:currentColor"></span></div>
+    ${b.runner_up && b.status !== "settled" ? `<div style="font-size:14px">Real alternative: <b>${esc(b.runner_up.project)}</b>, first in ${esc(b.runner_up.first_in)}</div>` : ""}`;
+  if (b.changed) h += `<div class="note">${b.changed.leader_changed ? `The leader changed from <b>${esc(b.changed.before)}</b>.` : `<b>${esc(b.changed.before)}</b> still leads.`}</div>`;
+  if (b.leader.why.length) h += `<h3>Why it leads</h3><ul>${b.leader.why.map(x => `<li>${esc(x)}</li>`).join("")}</ul>`;
+  if (b.leader.tradeoffs.length) h += `<h3>What you'd be accepting</h3><ul>${b.leader.tradeoffs.map(x => `<li>${esc(x)}</li>`).join("")}</ul>`;
+  if (b.exit_note) h += `<div class="note">If selling later matters most: <b>${esc(b.exit_note.project)}</b> is the one option with resale evidence (${esc(b.exit_note.resale)} of its sales).</div>`;
+  if (b.compare) {
+    const [a, c] = b.compare;
+    h += `<h3>Head to head</h3><div class="scroll"><table><tr><th></th><th>${esc(a.project)}</th><th>${c ? esc(c.project) : ""}</th></tr>
+      <tr><td>First in</td><td>${esc(a.first_in)}</td><td>${c ? esc(c.first_in) : ""}</td></tr>` +
+      Object.keys(a.rows).map(k => `<tr><td>${esc(k)}</td><td>${esc(a.rows[k])}</td><td>${c ? esc(c.rows[k]) : ""}</td></tr>`).join("") + `</table></div>`;
+  }
+  if (b.project) {
+    const p = b.project;
+    h += `<h3>${esc(p.project)} · rank #${p.rank}, first in ${esc(p.first_in)}</h3>
+      ${p.why.length ? `<ul>${p.why.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
+      ${p.tradeoffs.length ? `<p style="margin:6px 0 0;color:var(--muted);font-size:14px">Watch: ${p.tradeoffs.map(esc).join("; ")}</p>` : ""}`;
+  }
+  h += `<h3>Finalists</h3><div class="scroll"><table><tr><th>Project</th><th>First in</th><th>Sales/mo</th><th>Median price</th><th>AED/sqft</th><th>Q1→Q3</th><th>In budget</th></tr>` +
+    b.finalists.map(x => `<tr><td>${esc(x.project)}<small>${esc(x.master)} · ${esc(x.confidence)}</small></td><td>${esc(x.first_in)}</td><td>${esc(x.demand)}</td>
+      <td>${esc(x.median_price)}</td><td>${esc(x.ppsf)}</td><td>${esc(x.momentum ?? "n/a")}</td><td>${esc(x.in_budget)}</td></tr>`).join("") + `</table></div>`;
+  if (b.flips && b.flips.length) h += `<h3>What would change the answer</h3><ul>${b.flips.map(x => `<li>${esc(x.criterion)} ${esc(x.change)} → ${esc(x.new_leader)}</li>`).join("")}</ul>`;
+  for (const w of b.warnings || []) h += `<div class="warn">${esc(w)}</div>`;
+  h += `<h3>Verify before money moves</h3><ul class="verify">${b.verify.map((v, i) =>
+    `<li><label style="display:flex;gap:8px;align-items:flex-start;color:var(--ink);font-size:14px;margin:0"><input type="checkbox" id="v${i}">${esc(v)}</label></li>`).join("")}</ul>
+    <div class="actions">
+      ${b.runner_up ? `<button type="button" data-say="Compare ${esc(b.leader.project)} and ${esc(b.runner_up.project)}">Compare top 2</button>` : ""}
+      <a href="${evidenceLink(b)}">Evidence view</a>
+      <button type="button" id="memobtn">Write the memo</button>
+    </div>
+    <div id="memobox" hidden>
+      <label for="choice">Your decision<select id="choice"><option value="">not decided yet</option>${b.finalists.map(x => `<option>${esc(x.project)}</option>`).join("")}<option>None of these</option></select></label>
+      <label for="mwhy">Why, in your words<input class="t" id="mwhy" placeholder="e.g. steadiest demand in budget; accept developer pricing"></label>
+      <label for="mkill">What would change our mind<input class="t" id="mkill" placeholder="e.g. sales fall under 5 a month for two months"></label>
+      <div class="memo" id="memo"></div>
+      <div class="actions"><button type="button" id="copy">Copy memo</button><span id="copied" style="color:var(--muted);font-size:13px;align-self:center"></span></div>
+    </div>
+    <div class="writer">Written by ${b.writer === "claude" ? "Claude" : "rules (template)"} · every number is checked against the engine's output · numbers computed in pandas, not generated</div>`;
+  $("#brief").innerHTML = h;
+  document.querySelectorAll("#brief [data-say]").forEach(x => x.addEventListener("click", () => send(x.dataset.say)));
+  $("#memobtn").addEventListener("click", () => { $("#memobox").hidden = !$("#memobox").hidden; memo(); });
+  ["choice", "mwhy", "mkill"].forEach(id => $("#" + id).addEventListener("input", memo));
+  $("#copy").addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText($("#memo").textContent); $("#copied").textContent = "Copied"; }
+    catch { const s = getSelection(), r = document.createRange(); r.selectNodeContents($("#memo")); s.removeAllRanges(); s.addRange(r); $("#copied").textContent = "Selected; press Cmd/Ctrl+C"; }
+  });
 }
 
 function memo() {
-  const r = last; if (!r) return;
-  const w = Object.entries(r.frame.weights).map(([c, v]) => `${LABEL[c]} ${Math.round(v * 100)}%`).join(", ");
-  const top3 = r.options.slice(0, 3).map((o, i) => `  ${i + 1}. ${title(o.project)} — score ${o.score.toFixed(2)}, ${o.confidence}, first in ${pc1(o.p_first)} of weightings`).join("\n");
-  const [bmin, bmax] = r.frame.budget_aed;
+  const b = last; if (!b || !b.leader) return;
+  const f = b.frame;
   $("#memo").textContent =
-`DECISION MEMO — Dubai South allocation
+`DECISION MEMO — Dubai South
 Date: ${new Date().toISOString().slice(0, 10)}
-Frame: ticket AED ${n(bmin)}–${n(bmax)} · stage ${r.frame.stage} · Expo City ${r.frame.include_expo ? "included" : "excluded"}
-Criteria and weights (set by the decision-maker): ${w}
-Evidence: ${n(r.basis.rows)} registry sales, ${r.basis.from} to ${r.basis.to}, pulled ${r.basis.pulled}
+Frame: AED ${f.budget[0]}–${f.budget[1]} · ${f.stage} · Expo City ${f.include_expo ? "in" : "out"}
+Priorities (set by the decision-maker): ${f.priorities.join(", ")}
+Evidence: ${Number(b.basis.rows).toLocaleString()} registry sales, ${b.basis.from} to ${b.basis.to}
 
-Ranking under these criteria (the tool does not recommend):
-${top3 || "  none"}
-Stability: the leader comes first in ${pc1(r.stress.leader_holds)} of ${r.stress.draws} plausible weightings.
-${r.warnings.map(x => "! " + x).join("\n")}
+What the data says (the workbench does not pick):
+  ${b.leader.project} comes first in ${b.holds} of 2,000 scenarios (${b.status}).
+${b.finalists.map((x, i) => `  ${i + 1}. ${x.project}: first in ${x.first_in}, ${x.demand} sales/mo, median AED ${x.median_price}`).join("\n")}
+Accepting: ${b.leader.tradeoffs.join("; ") || "nothing flagged"}
 
-DECISION: ${$("#choice").value || "(not yet decided)"}
-Why: ${$("#why").value || "(to be written by the decision-maker)"}
-What would change our mind: ${$("#kill").value || "(to be written)"}
+DECISION: ${$("#choice").value || "(not decided yet)"}
+Why: ${$("#mwhy").value || "(to be written by the decision-maker)"}
+What would change our mind: ${$("#mkill").value || "(to be written)"}
 
-Must verify before committing (not in sales data):
-${r.global_gaps.map(g => "  [ ] " + g).join("\n")}`;
+Verify before money moves:
+${b.verify.map(v => "  [ ] " + v).join("\n")}`;
 }
 
-["bmin", "bmax", "stage", "expo"].forEach(id => $("#" + id).addEventListener("change", schedule));
-["choice", "why", "kill"].forEach(id => $("#" + id).addEventListener("input", memo));
-$("#choice").addEventListener("change", memo);
-$("#copy").addEventListener("click", async () => {
-  try { await navigator.clipboard.writeText($("#memo").textContent); $("#copied").textContent = "Copied"; }
-  catch { const s = window.getSelection(), rg = document.createRange(); rg.selectNodeContents($("#memo")); s.removeAllRanges(); s.addRange(rg); $("#copied").textContent = "Selected — press Ctrl/Cmd+C"; }
-});
-
-fetch("/api/decide/meta").then(r => r.json()).then(m => {
-  META = m; weights = {...m.presets[preset].weights}; paintPresets(); sliders(); load();
-});
+$("#f").addEventListener("submit", e => { e.preventDefault(); send($("#q").value); });
+$("#q").addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send($("#q").value); } });
 </script>
 </body>
 </html>

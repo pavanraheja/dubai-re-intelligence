@@ -25,6 +25,7 @@ CRITERIA = {
     "stability": "Price consistency: 1 minus the spread of price per sqft (IQR ÷ median)",
     "momentum": "Price momentum you can rely on: the LOWER end of the 90% interval for Q1 → Q3 median price per sqft",
     "value": "Entry value: price per sqft against the Dubai South median (lower scores higher)",
+    "resale": "Resale evidence: share of sales that are resales or sales of ready units (some ready sales may be developer stock; measurable only where they exist)",
 }
 
 PRESETS = {
@@ -96,6 +97,9 @@ def metrics(d, budget=(1_000_000, 2_500_000), stage="all", include_expo=True, se
             "median_ppsf": round(g["ppsf"].median(), 0),
             "median_price": int(g["price_aed"].median()),
             "offplan_share": round(offplan, 2), "resale_share": round((g["procedure"] == "Delayed Sell").mean(), 3),
+            # ready resales are "Sale" on a Ready unit; off-plan resales are "Delayed Sell"
+            "resale": round(((g["procedure"] == "Delayed Sell") |
+                             ((g["procedure"] == "Sale") & (g["reg_type"] == "Ready"))).mean(), 3),
             "in_budget_share": round(in_budget, 2),
         }
         why = []
@@ -151,6 +155,8 @@ def stress(e_sorted, pct, w, draws=2000, seed=11):
     """How fragile is the ranking? Resample weights around the chosen ones (Dirichlet)
     and count how often each project comes first and top-3. Then find single weight
     changes (×0.5 and ×1.5 on one criterion) that change the first place."""
+    if e_sorted.empty:                       # nothing passes the frame: nothing to stress
+        return np.array([]), np.array([]), []
     rng = np.random.default_rng(seed)
     crits = list(w)
     M = np.column_stack([pct[c].reindex(e_sorted.index).fillna(0.5).to_numpy() for c in crits])

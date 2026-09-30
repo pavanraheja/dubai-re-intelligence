@@ -65,6 +65,11 @@ def test_every_option_carries_the_evidence_gaps():
         assert any("Exit liquidity" in g for g in o["gaps"])
 
 
+def test_a_budget_nothing_fits_returns_empty_not_a_crash():
+    r = run(budget=(30_000_000, 40_000_000))
+    assert r["options"] == [] and r["stress"]["leader_holds"] is None
+
+
 def test_output_is_json_serialisable_for_every_preset():
     for p in PRESETS:
         json.dumps(run(p))

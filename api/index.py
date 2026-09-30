@@ -80,9 +80,29 @@ def api_decide_meta():
     return jsonify({"criteria": CRITERIA, "presets": PRESETS})
 
 
+@app.post("/api/converse")
+def api_converse():
+    from decide.converse import converse
+    body = request.get_json(silent=True) or {}
+    msg = str(body.get("message", ""))[:500]
+    if not msg.strip():
+        return jsonify({"error": "empty message"}), 400
+    state, brief = converse(msg, body.get("state") or {}, body.get("previous"))
+    # same logging rule as /api/ask: the words and what the tool did, nothing identifying
+    print(json.dumps({"event": "converse", "q": msg, "frame": state.get("frame"),
+                      "priorities": state.get("priorities"), "status": brief.get("status"),
+                      "leader": (brief.get("leader") or {}).get("project"), "writer": brief.get("writer")}), flush=True)
+    return Response(json.dumps(_clean({"state": state, "brief": brief})), mimetype="application/json")
+
+
 @app.get("/decide")
 def decide_page():
     return Response(open(os.path.join(ROOT, "api", "decide.html")).read(), mimetype="text/html")
+
+
+@app.get("/decide/evidence")
+def evidence_page():
+    return Response(open(os.path.join(ROOT, "api", "evidence.html")).read(), mimetype="text/html")
 
 
 @app.get("/api/meta")

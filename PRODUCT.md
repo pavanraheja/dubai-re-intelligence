@@ -99,6 +99,7 @@ Privacy: no IP or identifying data is logged, and visitors' questions are never 
 | 27 Sep 2026 | Add advice and unknown-area refusals, and an independent eval set | Baseline eval: 21 questions answered that should have been refused |
 | 27 Sep 2026 | Dashboard: "BUY / SELL" signals renamed to momentum labels; rental yields labelled MODELLED | The same product cannot refuse advice in one screen and give it in the next. Rents are hard-coded 2025 estimates, not registry data |
 | 27 Sep 2026 | Add a one-community snapshot, notable deals, project and off-plan splits; refusals suggest answerable questions | First live session: the hand-typed question got a generic table, and refusals read as failures. Everyday set 18/30 → 30/30 |
+| 30 Sep 2026 | Scan Business Bay, Downtown and Dubai Islands before building; Business Bay next | The premise was "more transactions"; the scan showed Business Bay has a quarter of Dubai South's sales but 45% resale or ready sales vs 6%, so it makes exit liquidity measurable. Downtown 71% but thin (14 rankable projects); Dubai Islands 0% (`pipeline/market_scan.py`) |
 | 30 Sep 2026 | Conversation + live brief replaces the control panel; sliders become the evidence view | A decision-maker states a budget and priorities in words and wants the answer first. The user's own 4–5M and 1–2M budgets weren't even selectable in the band dropdown. Rules-first so it runs at $0; Claude-ready behind a key, with every generated number checked |
 | 30 Sep 2026 | Reframe from answering questions to supporting a decision: the Dubai South workbench | A question tool shows evidence; a committee needs a decision with its trade-offs visible. The tool ranks under the person's criteria and never picks; the data forced two honest relabels (liquidity → demand proxy; momentum → lower bound) |
 | 28 Sep 2026 | One chart per community for "both" trends, each on its own scale | Third live session: "price trend in both, but show me both". Routing was right, but on a shared axis Emaar South's +2.2% flattened into a straight line under Creek Harbour. The loop now flags a rephrase that gets the same answer as a presentation miss, a failure class the eval sets cannot see |
@@ -125,7 +126,8 @@ Five rules decide the order, and they matter more than the scores:
 | Nightly data pull and redeploy | 2 | 0 | 2 | 1 | ~½ day, $0 on free tiers | **Next** |
 | Historic data, so year-on-year becomes answerable | 1 | 1 | 3 | 3 | source and price unknown | **Spike** (rule 4) |
 | Supply data, so "absorbing supply?" becomes answerable | 1 | 1 | 3 | 3 | source unknown; new evidence rules | **Spike** (rule 4) |
-| More areas | 1 | 1 | 1 | 1 | ~1 day per area incl. eval questions | **Later**: the committee invests in two |
+| Business Bay as a second market (scanned 30 Sep: 45% resale or ready vs 6%) | 3 | 1 | 3 | 2 | ~½ day on the existing engine, plus building-level evals | **Next**: the one market where exit liquidity can be measured |
+| Other areas (Downtown: 71% secondary but only 14 rankable projects; Dubai Islands: 0% secondary) | 1 | 1 | 1 | 1 | ~½ day each | **Later** |
 | Rents and yields | 2 | 0 | 3 | 3 | second source, own contract | **Later** |
 | Forecasts, buy advice, causes | — | asked for | — | — | — | **Never** (rule 5) |
 

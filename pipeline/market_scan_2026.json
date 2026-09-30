@@ -1,0 +1,258 @@
+{
+  "Dubai South": {
+    "sales": 13266,
+    "per_month": 1474.0,
+    "ready_share": 0.06,
+    "resale_share": 0.06,
+    "offplan_resales": 98,
+    "projects": 92,
+    "projects_30plus": 36,
+    "top_projects": [
+      [
+        "AZIZI VENICE",
+        7711
+      ],
+      [
+        "WINDSOR HOUSE",
+        761
+      ],
+      [
+        "TERRA WOODS",
+        479
+      ],
+      [
+        "HAYAT",
+        332
+      ],
+      [
+        "WAADA ALTURA",
+        275
+      ],
+      [
+        "GOLF VALE",
+        237
+      ]
+    ],
+    "median_ppsf": 1660,
+    "median_price": 948000,
+    "ppsf_spread": 0.23,
+    "studio_1br_share": 0.76,
+    "registry_areas": [
+      "DUBAI SOUTH",
+      "EMAAR SOUTH",
+      "MADINAT AL MATAAR"
+    ],
+    "sample_raw_projects": [
+      "",
+      "AVENEW888 - MODO",
+      "AVENEW888-LOOM",
+      "AZIZI VENICE 1",
+      "AZIZI VENICE 10",
+      "AZIZI VENICE 11",
+      "AZIZI VENICE 14",
+      "AZIZI VENICE 2",
+      "AZIZI VENICE 3",
+      "AZIZI VENICE 4",
+      "AZIZI VENICE 5",
+      "AZIZI VENICE 7"
+    ]
+  },
+  "Dubai Islands (registry: Palm Deira)": {
+    "sales": 3279,
+    "per_month": 364.0,
+    "ready_share": 0.0,
+    "resale_share": 0.0,
+    "offplan_resales": 0,
+    "projects": 97,
+    "projects_30plus": 21,
+    "top_projects": [
+      [
+        "HADO BY BEYOND",
+        623
+      ],
+      [
+        "ELLINGTON SANDS",
+        508
+      ],
+      [
+        "THE MERIVA COLLECTION",
+        479
+      ],
+      [
+        "LIV OCEANSIDE",
+        105
+      ],
+      [
+        "SUNSET BAY GRAND BY IMTIAZ",
+        82
+      ],
+      [
+        "SEACLIFF BY IMTIAZ",
+        60
+      ]
+    ],
+    "median_ppsf": 2815,
+    "median_price": 2862828,
+    "ppsf_spread": 0.31,
+    "studio_1br_share": 0.47,
+    "registry_areas": [
+      "PALM DEIRA"
+    ],
+    "sample_raw_projects": [
+      "241 Waterside",
+      "997 Residences by Reef Luxury Development",
+      "Agua Residences by Citi Developers - Tower 1",
+      "Agua Residences by Citi Developers - Tower 2",
+      "Allegro Park by Mill Hill Riviera Development",
+      "Allegro Residences",
+      "Aquora by Casa Vista Development",
+      "Arka Enclave Residences",
+      "Arya Residences by Citi Developers",
+      "Avida Residences",
+      "Ayamore Residence",
+      "Azura Residences"
+    ]
+  },
+  "Business Bay": {
+    "sales": 3515,
+    "per_month": 391.0,
+    "ready_share": 0.46,
+    "resale_share": 0.45,
+    "offplan_resales": 176,
+    "projects": 105,
+    "projects_30plus": 29,
+    "top_projects": [
+      [
+        "BINGHATTI AQUARISE",
+        195
+      ],
+      [
+        "PENINSULA FOUR",
+        176
+      ],
+      [
+        "DOWNTOWN RESIDENCES",
+        160
+      ],
+      [
+        "AVARRA BY PALACE",
+        155
+      ],
+      [
+        "AL HABTOOR TOWER",
+        154
+      ],
+      [
+        "PENINSULA THREE",
+        138
+      ]
+    ],
+    "median_ppsf": 2414,
+    "median_price": 2080000,
+    "ppsf_spread": 0.42,
+    "studio_1br_share": 0.65,
+    "registry_areas": [
+      "BUSINESS BAY"
+    ],
+    "sample_raw_projects": [
+      "",
+      "15 Northside",
+      "77S",
+      "AG TOWER",
+      "AL HABTOOR CITY",
+      "AVANTI TOWER",
+      "AYKON CITY 2",
+      "AYKON CITY 3",
+      "Ahad Residences",
+      "Al Habtoor Tower",
+      "Avarra by Palace",
+      "BAY SQUARE"
+    ]
+  },
+  "Downtown (registry: Burj Khalifa)": {
+    "sales": 1364,
+    "per_month": 152.0,
+    "ready_share": 0.71,
+    "resale_share": 0.71,
+    "offplan_resales": 63,
+    "projects": 48,
+    "projects_30plus": 14,
+    "top_projects": [
+      [
+        "THE ST. REGIS RESIDENCES, DOWNTOWN DUBAI",
+        92
+      ],
+      [
+        "BURJ KHALIFA TOWERS",
+        73
+      ],
+      [
+        "BINGHATTI SKYBLADE",
+        66
+      ],
+      [
+        "THE ADDRESS DUBAI OPERA",
+        44
+      ],
+      [
+        "IMPERIAL AVENUE",
+        43
+      ],
+      [
+        "BURJ CROWN",
+        42
+      ]
+    ],
+    "median_ppsf": 2739,
+    "median_price": 3025000,
+    "ppsf_spread": 0.44,
+    "studio_1br_share": 0.43,
+    "registry_areas": [
+      "BURJ KHALIFA"
+    ],
+    "sample_raw_projects": [
+      "",
+      "29 BOULEVARD",
+      "ACT ONE | ACT TWO",
+      "AZHA DOWNTOWN RESIDENCES",
+      "BAHWAN TOWER",
+      "BELLEVUE TOWERS",
+      "BLVD CRESCENT",
+      "BLVD HEIGHTS",
+      "BURJ AL NUJOOM",
+      "BURJ KHALIFA TOWERS",
+      "BURJ VIEWS",
+      "BURJ VISTA"
+    ]
+  },
+  "Island 2 (Jumeira Bay, not Dubai Islands)": {
+    "sales": 4,
+    "per_month": 1.0,
+    "ready_share": 0.75,
+    "resale_share": 0.75,
+    "offplan_resales": 0,
+    "projects": 2,
+    "projects_30plus": 0,
+    "top_projects": [
+      [
+        "VILLA AMALFI",
+        3
+      ],
+      [
+        "BULGARI LIGHTHOUSE DUBAI",
+        1
+      ]
+    ],
+    "median_ppsf": 8494,
+    "median_price": 27500000,
+    "ppsf_spread": 0.55,
+    "studio_1br_share": 0.0,
+    "registry_areas": [
+      "ISLAND 2"
+    ],
+    "sample_raw_projects": [
+      "Bulgari Lighthouse Dubai",
+      "Villa Amalfi"
+    ]
+  }
+}

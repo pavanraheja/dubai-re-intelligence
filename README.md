@@ -126,6 +126,7 @@ It never changes a rule, threshold or eval label by itself. A public text box th
 - `fetch_dld.py` pulls residential sales from the land department's open-data API (the endpoint behind [dubailand.gov.ae/en/open-data/real-estate-data](https://dubailand.gov.ae/en/open-data/real-estate-data/)). It keeps market sales of flats and villas and drops developer bulk registrations, hotel apartments, land and price-per-sqft outliers, counting each drop.
 - `communities.py` defines each community. The registry has no "Emaar South", so it is defined by project name. The first pull's exclusion report caught Grove Ridge and Vista Ridge, which would have been a 30% undercount.
 - **Limit:** the public API serves the current calendar year only, so the extract starts 1 Jan 2026.
+- `market_scan.py` scans candidate markets before anything is built for them. Its 2026 output: Business Bay has about a quarter of Dubai South's sales but 45% are resales or ready sales (vs 6%); Downtown (registry "Burj Khalifa") 71%; Dubai Islands (registry "Palm Deira") 0%.
 
 ## Other tools in this repo
 

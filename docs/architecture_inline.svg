@@ -78,7 +78,7 @@
 <text x="463.0" y="442" text-anchor="middle" font-size="11" fill="var(--muted)">confirm / correct labels</text>
 <rect x="220" y="405" width="150" height="52" rx="8" fill="var(--surface)" stroke="currentColor" stroke-width="1.2"/>
 <text x="295.0" y="425" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">evals/</text>
-<text x="295.0" y="442" text-anchor="middle" font-size="11" fill="var(--muted)">135 Qs · 26 tests</text>
+<text x="295.0" y="442" text-anchor="middle" font-size="11" fill="var(--muted)">135 Qs · 38 tests</text>
 <rect x="52" y="405" width="150" height="52" rx="8" fill="var(--surface)" stroke="currentColor" stroke-width="1.2"/>
 <text x="127.0" y="425" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">deploy</text>
 <text x="127.0" y="442" text-anchor="middle" font-size="11" fill="var(--muted)">must pass evals</text>
@@ -101,7 +101,7 @@
 <text x="127.0" y="577" text-anchor="middle" font-size="11" fill="var(--muted)">13,240 sales</text>
 <rect x="220" y="540" width="150" height="52" rx="8" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"/>
 <text x="295.0" y="560" text-anchor="middle" font-size="13" font-weight="600" fill="var(--accent)">YOU SET CRITERIA</text>
-<text x="295.0" y="577" text-anchor="middle" font-size="11" fill="var(--muted)">frame · weights</text>
+<text x="295.0" y="577" text-anchor="middle" font-size="11" fill="var(--muted)">in your own words</text>
 <rect x="388" y="540" width="150" height="52" rx="8" fill="var(--surface)" stroke="currentColor" stroke-width="1.2"/>
 <text x="463.0" y="560" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">decide/engine.py</text>
 <text x="463.0" y="577" text-anchor="middle" font-size="11" fill="var(--muted)">percentile scores</text>

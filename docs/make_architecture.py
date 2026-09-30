@@ -137,7 +137,7 @@ def diagram(theme):
     # ── lane 4: decide (the person sets criteria and makes the call) ──
     y = 540
     box(c[0], y, "dubai_south.csv", "13,240 sales")
-    box(c[1], y, "YOU SET CRITERIA", "frame · weights", accent=True)
+    box(c[1], y, "YOU SET CRITERIA", "in your own words", accent=True)
     box(c[2], y, "decide/engine.py", "percentile scores")
     box(c[3], y, "stress test", "2,000 weightings")
     box(c[4], y, "gaps + warnings", "what data can't say")

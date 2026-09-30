@@ -1,7 +1,7 @@
 {
   "functions": {
     "api/index.py": {
-      "includeFiles": "{ask/**,api/page.html,dashboard/data/dld_transactions.csv,pipeline/extract_report.json,pipeline/dld_area_names.txt,evals/summary.json}",
+      "includeFiles": "{ask/**,decide/**,api/page.html,api/decide.html,dashboard/data/dubai_south.csv,pipeline/dubai_south_report.json,dashboard/data/dld_transactions.csv,pipeline/extract_report.json,pipeline/dld_area_names.txt,evals/summary.json}",
       "maxDuration": 30
     }
   }

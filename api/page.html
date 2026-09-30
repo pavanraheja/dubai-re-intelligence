@@ -54,6 +54,7 @@ a{color:var(--accent)}
 </head>
 <body>
 <main>
+  <p style="margin:0 0 10px;font-size:14px"><a href="/decide">Deciding where to invest in Dubai South? Open the decision workbench →</a></p>
   <h1>Ask Dubai sales data — and be told when not to trust the answer</h1>
   <p class="sub">Emaar South and Dubai Creek Harbour. Every number carries its basis and a confidence grade. Questions the data cannot support are refused, with the reason.</p>
   <div class="basis" id="basis">Loading data basis…</div>
@@ -184,6 +185,8 @@ function body(tool, d) {
 function render(a) {
   let h = `<div class="card"><div class="q">${esc(a.question)}</div>`;
   for (const r of a.scope_refusals) h += `<div class="refuse"><b>Can't answer this from sales data</b>${esc(r)}</div>`;
+  if (a.scope_refusals.some(r => r.startsWith("advice question")))
+    h += `<p style="margin:4px 0 8px"><a href="/decide">Weighing where to invest? Use the decision workbench: you set the criteria, it shows the evidence and how settled the ranking is.</a></p>`;
   if (a.scope_refusals.length) {
     const tries = suggest(a.scope_refusals.join(" "), a.question);
     h += `<div class="instead">Questions this data <b>can</b> answer instead:</div><div>` +

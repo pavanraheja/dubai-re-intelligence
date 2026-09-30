@@ -46,6 +46,45 @@ def api_ask():
     return Response(json.dumps(as_json(a), default=str), mimetype="application/json")
 
 
+def _clean(o):
+    """numpy / NaN → plain JSON (the browser's JSON.parse rejects NaN)."""
+    import math
+    if isinstance(o, dict):
+        return {k: _clean(v) for k, v in o.items()}
+    if isinstance(o, (list, tuple)):
+        return [_clean(v) for v in o]
+    if hasattr(o, "item"):
+        o = o.item()
+    if isinstance(o, float) and math.isnan(o):
+        return None
+    return o
+
+
+@app.get("/api/decide")
+def api_decide():
+    from decide.engine import run, CRITERIA, PRESETS
+    a = request.args
+    weights = {c: float(a[f"w_{c}"]) for c in CRITERIA if a.get(f"w_{c}")}
+    weights = {c: v for c, v in weights.items() if v > 0} or None
+    budget = (float(a.get("budget_min", 1_000_000)), float(a.get("budget_max", 2_500_000)))
+    preset = a.get("preset", "demand_first") if a.get("preset") in PRESETS else "demand_first"
+    r = run(preset, weights, budget, a.get("stage", "all"), a.get("expo", "1") == "1")
+    print(json.dumps({"event": "decide", "preset": r["frame"]["preset"], "weights": r["frame"]["weights"],
+                      "budget": list(budget), "stage": r["frame"]["stage"]}), flush=True)
+    return Response(json.dumps(_clean(r)), mimetype="application/json")
+
+
+@app.get("/api/decide/meta")
+def api_decide_meta():
+    from decide.engine import CRITERIA, PRESETS
+    return jsonify({"criteria": CRITERIA, "presets": PRESETS})
+
+
+@app.get("/decide")
+def decide_page():
+    return Response(open(os.path.join(ROOT, "api", "decide.html")).read(), mimetype="text/html")
+
+
 @app.get("/api/meta")
 def api_meta():
     cov, _ = tools.data_coverage()

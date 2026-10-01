@@ -91,7 +91,7 @@ Privacy: no IP or identifying data is logged, and visitors' questions are never 
 ## Decision log
 | Date | Decision | Basis |
 |---|---|---|
-| 2025 | Two communities, not all of Dubai | Only these two drove allocation decisions |
+| 2025 | Two communities, not all of Dubai | These were the two Dash Capital invested in; an all-of-Dubai view had no decision attached |
 | 25 Sep 2026 | Add the agent layer: the model picks the tool, never the number | A chatbot on a dataset is easy; making it say "I don't know" in the right places is the product |
 | 27 Sep 2026 | Refuse supply and absorption questions | Self-review: the flagship demo question could not actually be answered from sales data |
 | 27 Sep 2026 | Replace synthetic demo data with real DLD sales | Synthetic data labelled "real format" is a trust bug in a tool whose whole promise is provenance |

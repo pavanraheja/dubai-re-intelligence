@@ -8,7 +8,7 @@ Ask Dubai property-sales data a question in plain English. The answer comes back
 
 **Product thinking:** [PRODUCT.md](PRODUCT.md) covers the decision it serves, requirements, the evidence contract, what was cut, how it is measured, the decision log and what's next.
 
-Built by Pavan Raheja while leading investment and strategy at Dash Capital (Dubai) — **[see my work & get in touch → pavan.blog/work](https://www.pavan.blog/work?utm_source=github&utm_medium=readme&utm_campaign=dubai-re-intelligence)**.
+Built by Pavan Raheja around the allocation question he worked on at Dash Capital (Dubai) — **[see my work & get in touch → pavan.blog/work](https://www.pavan.blog/work?utm_source=github&utm_medium=readme&utm_campaign=dubai-re-intelligence)**.
 
 ## At a glance
 
